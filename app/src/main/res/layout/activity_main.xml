@@ -112,24 +112,28 @@
             android:id="@+id/piecePriceLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="@string/totalPricePerUnit" />
 
         <TextView
             android:id="@+id/pieceCountLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="@string/totalUnitsQuantity" />
 
         <TextView
             android:id="@+id/pieceConvertedPerItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="@string/convertedTotalPricePerUnit" />
 
         <TextView
             android:id="@+id/pieceConvertedTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="@string/convertedTotalPrice" />
     </LinearLayout>
 
@@ -142,43 +146,49 @@
         app:layout_constraintTop_toBottomOf="@id/priceUnitRow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/pricePerUnitLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="@string/pricePerSpecialType" />
 
         <TextView
             android:id="@+id/takenAmountLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="@string/quantityPerType" />
 
         <TextView
             android:id="@+id/costPerBaseUnitLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="@string/pricePerOneByType" />
 
         <TextView
             android:id="@+id/convertedPerUnitLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:text="@string/convertedTotalPricePerUnitByType" />
 
         <TextView
             android:id="@+id/convertedPerBaseUnitLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="@string/convertedTotalPricePerType" />
 
         <TextView
             android:id="@+id/convertedTotalLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="@string/convertedTotalPrice" />
     </LinearLayout>
 

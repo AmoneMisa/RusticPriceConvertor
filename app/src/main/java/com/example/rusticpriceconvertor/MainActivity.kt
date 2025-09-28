@@ -7,7 +7,9 @@ import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.text.style.StyleSpan
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -275,12 +277,17 @@ class MainActivity : AppCompatActivity() {
         if (sellUnit == "шт.") {
             showPieceMode()
             val total = price * qty
+
             piecePriceLabel.text = "Цена за штуку: %.2f %s".format(price, base())
             pieceCountLabel.text = "Количество штук: ${qty.toInt()}"
-            pieceConvertedPerItem.text =
-                "Конвертированная стоимость за штуку: ${formatConverted(price)}"
-            pieceConvertedTotal.text =
-                "Конвертированная итоговая стоимость: ${formatConverted(total)}"
+            pieceConvertedPerItem.setText(
+                SpannableStringBuilder("Конвертированная стоимость за штуку:\n").append(formatConverted(price)),
+                TextView.BufferType.SPANNABLE
+            )
+            pieceConvertedTotal.setText(
+                SpannableStringBuilder("Конвертированная итоговая стоимость:\n").append(formatConverted(total)),
+                TextView.BufferType.SPANNABLE
+            )
             return
         }
 
@@ -292,12 +299,18 @@ class MainActivity : AppCompatActivity() {
             pricePerUnitLabel.text = "Цена за л: %.2f %s".format(price, base())
             takenAmountLabel.text = "Взято (л): %.3f".format(qty)
             costPerBaseUnitLabel.text = "Стоимость за 1 л: %.2f %s".format(perLiter, base())
-            convertedPerUnitLabel.text =
-                "Конвертированная стоимость за л: ${formatConverted(perLiter)}"
-            convertedPerBaseUnitLabel.text =
-                "Конвертированная стоимость за 1 л: ${formatConverted(perLiter)}"
-            convertedTotalLabel.text =
-                "Конвертированная итоговая стоимость: ${formatConverted(total)}"
+            convertedPerUnitLabel.setText(
+                SpannableStringBuilder("Конвертированная стоимость за л:\n").append(formatConverted(perLiter)),
+                TextView.BufferType.SPANNABLE
+            )
+            convertedPerBaseUnitLabel.setText(
+                SpannableStringBuilder("Конвертированная стоимость за 1 л:\n").append(formatConverted(perLiter)),
+                TextView.BufferType.SPANNABLE
+            )
+            convertedTotalLabel.setText(
+                SpannableStringBuilder("Конвертированная итоговая стоимость:\n").append(formatConverted(total)),
+                TextView.BufferType.SPANNABLE
+            )
             return
         }
 
@@ -320,15 +333,20 @@ class MainActivity : AppCompatActivity() {
             "Взято (${sellUnit}): ${if (sellUnit == "кг") "%.3f".format(qty) else "%.0f".format(qty)}"
         costPerBaseUnitLabel.text =
             "Стоимость за 1 кг / 1 г: %.2f / %.4f %s".format(perKg, perGram, base())
-        convertedPerUnitLabel.text =
-            "Конвертированная стоимость за ${if (sellUnit == "кг") "кг" else "г"}: ${
-                formatConverted(if (sellUnit == "кг") perKg else perGram)
-            }"
-        convertedPerBaseUnitLabel.text =
-            "Конвертированная стоимость за 1 кг / 100 г: ${formatConverted(perKg)} / ${
-                formatConverted(per100g)
-            }"
-        convertedTotalLabel.text = "Конвертированная итоговая стоимость: ${formatConverted(total)}"
+        convertedPerUnitLabel.setText(
+            SpannableStringBuilder("Конвертированная стоимость за ${if (sellUnit == "кг") "кг" else "г"}:\n")
+                .append(formatConverted(if (sellUnit == "кг") perKg else perGram)),
+            TextView.BufferType.SPANNABLE
+        )
+        convertedPerBaseUnitLabel.setText(
+            SpannableStringBuilder("Конвертированная стоимость за 1 кг / 100 г:\n")
+                .append(formatConverted(perKg)).append("\n").append(formatConverted(per100g)),
+            TextView.BufferType.SPANNABLE
+        )
+        convertedTotalLabel.setText(
+            SpannableStringBuilder("Конвертированная итоговая стоимость:\n").append(formatConverted(total)),
+            TextView.BufferType.SPANNABLE
+        )
     }
 
     private fun base(): String = (baseCurrencySpinner.selectedItem ?: "USD").toString()
@@ -349,24 +367,25 @@ class MainActivity : AppCompatActivity() {
             if (sellUnit == "л") "Объём, л" else if (sellUnit == "кг") "Вес, кг" else "Вес, г"
     }
 
-    private fun formatConverted(amountInBase: Double): String {
-        if (amountInBase == 0.0) return "—"
-        if (selectedSymbols.isEmpty()) return "—"
+    private fun formatConverted(amountInBase: Double): CharSequence {
+        if (amountInBase == 0.0 || selectedSymbols.isEmpty()) return "—"
         val base = base()
-        val sb = StringBuilder()
+        val sb = SpannableStringBuilder()
+        var first = true
         for (code in selectedSymbols) {
             if (code == base) continue
-            val rate = rates[code]
-            if (rate == null) {
-                if (sb.isNotEmpty()) sb.append(" • ")
-                sb.append("$code —")
-            } else {
-                val v = amountInBase * rate
-                if (sb.isNotEmpty()) sb.append(" • ")
-                sb.append(code).append(' ').append(formatMoney(v))
-            }
+            val rate = rates[code] ?: continue
+            val v = amountInBase * rate
+            val line = "$code ${formatMoney(v)}"
+            if (!first) sb.append("\n")
+            val start = sb.length
+            sb.append(line)
+            // делаем код жирным (только первые 3/4 символа кода, потом пробел)
+            val boldEnd = start + code.length
+            sb.setSpan(StyleSpan(Typeface.BOLD), start, boldEnd, 0)
+            first = false
         }
-        return if (sb.isEmpty()) "—" else sb.toString()
+        return sb.ifEmpty { "—" }
     }
 
     private fun formatMoney(v: Double): String =
@@ -473,8 +492,27 @@ class MainActivity : AppCompatActivity() {
         if (selected.remove(baseNow)) {
             setSecondarySelectedPersisted(selected)
         }
+        lateinit var adapter: CurrencyAdapter
+        var currentQuery = ""
 
-        val adapter = CurrencyAdapter(
+        fun buildSelectedRows(): List<Row.Currency> =
+            selected.map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
+        fun buildFavoriteRows(): List<Row.Currency> =
+            getFavorites().map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
+
+        fun rebuild(q: String) {
+            currentQuery = q
+            val filtered = filter.filter(q)
+            val data = CurrencySectionBuilder.forSecondary(
+                selected = buildSelectedRows(),
+                favorites = buildFavoriteRows(),
+                all = all,
+                filteredAll = filtered
+            )
+            adapter.submitList(data)
+        }
+
+        adapter = CurrencyAdapter(
             context = this,
             singleMode = false,
             isFavorite = { getFavorites().contains(it) },
@@ -486,29 +524,16 @@ class MainActivity : AppCompatActivity() {
             isSelected = { selected.contains(it) },
             onToggleSelected = { code ->
                 if (!selected.add(code)) selected.remove(code)
+                // сохраняем прямо на лету, чтобы переживало пересоздание
+                setSecondarySelectedPersisted(selected)
             },
             onSinglePick = {}
         ).apply {
-            disabledCodes = setOf(baseNow) // базовая недоступна
+            disabledCodes = setOf(baseNow)
+            onAfterToggle = { rebuild(currentQuery) }
         }
+
         rv.adapter = adapter
-
-        fun buildSelectedRows(): List<Row.Currency> =
-            selected.map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
-
-        fun buildFavoriteRows(): List<Row.Currency> =
-            getFavorites().map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
-
-        fun rebuild(q: String) {
-            val filtered = filter.filter(q)
-            val data = CurrencySectionBuilder.forSecondary(
-                selected = buildSelectedRows(),
-                favorites = buildFavoriteRows(),
-                all = all,
-                filteredAll = filtered
-            )
-            adapter.submitList(data)
-        }
 
         val dlg = AlertDialog.Builder(this)
             .setCustomTitle(buildCenteredTitle("Валюты для конвертации (мин. 1, макс. 5)"))
@@ -541,6 +566,7 @@ class MainActivity : AppCompatActivity() {
         prefs.edit { putStringSet("favorites", s) }
     }
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun setLastBasePersisted(code: String) {
         prefs.edit { putString("last_base", code) }
         pushRecentBase(code)
@@ -556,6 +582,7 @@ class MainActivity : AppCompatActivity() {
     private fun getSecondarySelectedPersisted(): Set<String> =
         prefs.getStringSet("last_secondary", emptySet()) ?: emptySet()
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun pushRecentBase(code: String) {
         val list = prefs.getString("recent_base", "")!!
             .split(",").filter { it.isNotBlank() }.toMutableList()
