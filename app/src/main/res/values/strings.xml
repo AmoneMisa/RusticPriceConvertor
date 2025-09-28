@@ -16,4 +16,5 @@
     <string name="convertedTotalPricePerType">Конвертированная стоимость за 1 кг / 100 г / 1 л: —</string>
     <string name="currencySelected">selected</string>
     <string name="favoriteToggle">favorite toggle</string>
+    <string name="count">Число</string>
 </resources>

@@ -39,6 +39,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var priceUnitRow: LinearLayout
     private lateinit var priceUnitSpinner: Spinner
 
+    private lateinit var priceAmountInput: EditText
+
+    private lateinit var labelPriceUnit: TextView
+    private var baseDialog: AlertDialog? = null
+
     // Штучно
     private lateinit var modePiece: LinearLayout
     private lateinit var piecePriceLabel: TextView
@@ -88,6 +93,9 @@ class MainActivity : AppCompatActivity() {
 
         baseCurrencySpinner = findViewById(R.id.baseCurrencySpinner)
         selectCurrenciesButton = findViewById(R.id.selectCurrenciesButton)
+
+        labelPriceUnit = findViewById(R.id.labelPriceUnit)
+        priceAmountInput = findViewById(R.id.priceAmountInput)
 
         priceUnitRow = findViewById(R.id.priceUnitRow)
         priceUnitSpinner = findViewById(R.id.priceUnitSpinner)
@@ -181,8 +189,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         // перехватываем касание, чтобы открыть «красивый» диалог
-        baseCurrencySpinner.setOnTouchListener { _, _ ->
-            openBaseCurrencyDialogPretty()
+        baseCurrencySpinner.setOnTouchListener { _, ev ->
+            if (ev.action == android.view.MotionEvent.ACTION_UP) {
+                if (baseDialog?.isShowing != true) {
+                    openBaseCurrencyDialogPretty()
+                }
+            }
+            // возвращаем true, чтобы стандартный выпадающий список спиннера не открывался
             true
         }
     }
@@ -218,7 +231,7 @@ class MainActivity : AppCompatActivity() {
 
     // ========= Единицы товара =========
     private fun setupUnitSpinner() {
-        val units = listOf("шт.", "кг", "г", "л")
+        val units = listOf("шт.", "кг", "г", "л", "мл")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, units)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         quantityTypeSpinner.adapter = adapter
@@ -240,11 +253,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupPriceUnitOptions() {
         val sellUnit = (quantityTypeSpinner.selectedItem ?: "шт.").toString()
-        priceUnitRow.visibility = if (sellUnit == "шт.") View.GONE else View.VISIBLE
-        val options = if (sellUnit == "л") listOf("л") else listOf("кг", "г", "100 г")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, options)
+
+        // для штучного режима эта строка не нужна
+        if (sellUnit == "шт.") {
+            priceUnitRow.visibility = View.GONE
+            return
+        }
+
+        priceUnitRow.visibility = View.VISIBLE
+
+        val opts = when (sellUnit) {
+            "л", "мл" -> listOf("мл", "л")
+            else      -> listOf("г", "кг")
+        }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opts)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         priceUnitSpinner.adapter = adapter
+
+        // дефолт: 1 единица (чтобы было «за 1 л» / «за 1 кг» и т.д.)
+        if (priceAmountInput.text.isNullOrBlank()) priceAmountInput.setText("1")
+        priceAmountInput.hint = if (opts.first() == "мл") "сколько мл/л указано в цене" else "сколько г/кг указано в цене"
     }
 
     private fun attachRecalcListeners() {
@@ -255,15 +283,10 @@ class MainActivity : AppCompatActivity() {
         }
         priceInput.addTextChangedListener(watcher)
         quantityInput.addTextChangedListener(watcher)
+        priceAmountInput.addTextChangedListener(watcher)
 
         priceUnitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) = recalc()
-
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) = recalc()
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
@@ -277,77 +300,79 @@ class MainActivity : AppCompatActivity() {
         if (sellUnit == "шт.") {
             showPieceMode()
             val total = price * qty
-
             piecePriceLabel.text = "Цена за штуку: %.2f %s".format(price, base())
             pieceCountLabel.text = "Количество штук: ${qty.toInt()}"
-            pieceConvertedPerItem.setText(
-                SpannableStringBuilder("Конвертированная стоимость за штуку:\n").append(formatConverted(price)),
-                TextView.BufferType.SPANNABLE
-            )
-            pieceConvertedTotal.setText(
-                SpannableStringBuilder("Конвертированная итоговая стоимость:\n").append(formatConverted(total)),
-                TextView.BufferType.SPANNABLE
-            )
+            pieceConvertedPerItem.text = "Конвертированная стоимость за штуку:\n${formatConverted(price)}"
+            pieceConvertedTotal.text  = "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
             return
         }
 
         showWeightMode()
 
-        if (sellUnit == "л") {
-            val perLiter = price
-            val total = perLiter * qty
-            pricePerUnitLabel.text = "Цена за л: %.2f %s".format(price, base())
-            takenAmountLabel.text = "Взято (л): %.3f".format(qty)
-            costPerBaseUnitLabel.text = "Стоимость за 1 л: %.2f %s".format(perLiter, base())
-            convertedPerUnitLabel.setText(
-                SpannableStringBuilder("Конвертированная стоимость за л:\n").append(formatConverted(perLiter)),
-                TextView.BufferType.SPANNABLE
-            )
-            convertedPerBaseUnitLabel.setText(
-                SpannableStringBuilder("Конвертированная стоимость за 1 л:\n").append(formatConverted(perLiter)),
-                TextView.BufferType.SPANNABLE
-            )
-            convertedTotalLabel.setText(
-                SpannableStringBuilder("Конвертированная итоговая стоимость:\n").append(formatConverted(total)),
-                TextView.BufferType.SPANNABLE
-            )
+        val unitOfPrice   = (priceUnitSpinner.selectedItem ?: "").toString() // "мл"/"л" или "г"/"кг"
+        val amountOfPrice = priceAmountInput.text.toString().toDoubleOrNull() ?: 0.0
+        if (amountOfPrice <= 0.0) {
+            // пустая/некорректная цена-за — просто показываем прочерки
+            pricePerUnitLabel.text = "Цена за —: —"
+            takenAmountLabel.text = "—"
+            costPerBaseUnitLabel.text = "—"
+            convertedPerUnitLabel.text = "—"
+            convertedPerBaseUnitLabel.text = "—"
+            convertedTotalLabel.text = "—"
             return
         }
 
-        // Масса
-        val priceUnit = (priceUnitSpinner.selectedItem ?: "кг").toString()
-        val perGram = when (priceUnit) {
-            "кг" -> price / 1000.0
-            "г" -> price
-            "100 г" -> price / 100.0
-            else -> price
+        // ===== ОБЪЁМ =====
+        if (sellUnit == "л" || sellUnit == "мл") {
+            // переводим "цена за N единиц" в миллилитры
+            val pkgMl = when (unitOfPrice) {
+                "л"  -> amountOfPrice * 1000.0
+                else -> amountOfPrice // "мл"
+            }
+            val perMl = price / pkgMl                           // цена за 1 мл
+            val perL  = perMl * 1000.0                          // цена за 1 л
+            val per100ml = perMl * 100.0                        // цена за 100 мл
+
+            val qtyMl = if (sellUnit == "л") qty * 1000.0 else qty
+            val total = perMl * qtyMl
+
+            pricePerUnitLabel.text = "Цена за ${trimZeros(amountOfPrice)} $unitOfPrice: %.2f %s".format(price, base())
+            takenAmountLabel.text   = "Взято (мл): ${trimZeros(qtyMl)}"
+            costPerBaseUnitLabel.text = "Стоимость за 1 л / 1 мл: %.2f / %.4f %s".format(perL, perMl, base())
+
+            convertedPerUnitLabel.text =
+                "Конвертированная стоимость за 1 мл:\n${formatConverted(perMl)}"
+            convertedPerBaseUnitLabel.text =
+                "Конвертированная стоимость:\nза 1 л:\n${formatConverted(perL)}\nза 100 мл:\n${formatConverted(per100ml)}"
+            convertedTotalLabel.text =
+                "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
+            return
         }
+
+        // ===== ВЕС ===== (sellUnit == "кг" или "г")
+        val pkgG = when (unitOfPrice) {
+            "кг" -> amountOfPrice * 1000.0
+            else -> amountOfPrice // "г"
+        }
+        val perGram = price / pkgG
+        val perKg   = perGram * 1000.0
+        val per100g = perGram * 100.0
+
         val qtyGram = if (sellUnit == "кг") qty * 1000.0 else qty
         val total = perGram * qtyGram
 
-        val perKg = perGram * 1000.0
-        val per100g = perGram * 100.0
+        pricePerUnitLabel.text   = "Цена за ${trimZeros(amountOfPrice)} $unitOfPrice: %.2f %s".format(price, base())
+        takenAmountLabel.text    = "Взято (г): ${trimZeros(qtyGram)}"
+        costPerBaseUnitLabel.text = "Стоимость за 1 кг / 1 г: %.2f / %.4f %s".format(perKg, perGram, base())
 
-        pricePerUnitLabel.text = "Цена за $priceUnit: %.2f %s".format(price, base())
-        takenAmountLabel.text =
-            "Взято (${sellUnit}): ${if (sellUnit == "кг") "%.3f".format(qty) else "%.0f".format(qty)}"
-        costPerBaseUnitLabel.text =
-            "Стоимость за 1 кг / 1 г: %.2f / %.4f %s".format(perKg, perGram, base())
-        convertedPerUnitLabel.setText(
-            SpannableStringBuilder("Конвертированная стоимость за ${if (sellUnit == "кг") "кг" else "г"}:\n")
-                .append(formatConverted(if (sellUnit == "кг") perKg else perGram)),
-            TextView.BufferType.SPANNABLE
-        )
-        convertedPerBaseUnitLabel.setText(
-            SpannableStringBuilder("Конвертированная стоимость за 1 кг / 100 г:\n")
-                .append(formatConverted(perKg)).append("\n").append(formatConverted(per100g)),
-            TextView.BufferType.SPANNABLE
-        )
-        convertedTotalLabel.setText(
-            SpannableStringBuilder("Конвертированная итоговая стоимость:\n").append(formatConverted(total)),
-            TextView.BufferType.SPANNABLE
-        )
+        convertedPerUnitLabel.text =
+            "Конвертированная стоимость за 1 г:\n${formatConverted(perGram)}"
+        convertedPerBaseUnitLabel.text =
+            "Конвертированная стоимость:\nза 1 кг:\n${formatConverted(perKg)}\nза 100 г:\n${formatConverted(per100g)}"
+        convertedTotalLabel.text =
+            "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
     }
+
 
     private fun base(): String = (baseCurrencySpinner.selectedItem ?: "USD").toString()
 
@@ -363,8 +388,12 @@ class MainActivity : AppCompatActivity() {
         modePiece.visibility = View.GONE
         modeWeight.visibility = View.VISIBLE
         val sellUnit = (quantityTypeSpinner.selectedItem ?: "кг").toString()
-        quantityInput.hint =
-            if (sellUnit == "л") "Объём, л" else if (sellUnit == "кг") "Вес, кг" else "Вес, г"
+        quantityInput.hint = when (sellUnit) {
+            "л"  -> "Объём, л"
+            "мл" -> "Объём, мл"
+            "кг" -> "Вес, кг"
+            else -> "Вес, г"
+        }
     }
 
     private fun formatConverted(amountInBase: Double): CharSequence {
@@ -456,13 +485,16 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(CurrencySectionBuilder.forBase(current, recents, all, filtered))
         }
 
-        dlg = AlertDialog.Builder(this)
+        if (baseDialog?.isShowing == true) return
+        baseDialog = AlertDialog.Builder(this)
             .setCustomTitle(buildCenteredTitle("Основная валюта"))
             .setView(view)
             .setNegativeButton("Закрыть", null)
-            .create()
+            .create().also { dlg ->
+                dlg.setOnDismissListener { baseDialog = null }
+                dlg.show()
+            }
 
-        dlg.show()
         rebuild("")
         search.addTextChangedListener { s -> rebuild(s?.toString() ?: "") }
     }
