@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Rustic Price Convertor</string>
+    <string name="searchCurrency">Поиск валюты</string>
+    <string name="chooseCurrencies">ВЫБРАТЬ ВАЛЮТЫ</string>
+    <string name="priceInput">Цена</string>
+    <string name="quantityInput">Количество</string>
+    <string name="priceFerType">Цена указана за:</string>
+    <string name="totalPricePerUnit">Цена за штуку: -</string>
+    <string name="totalUnitsQuantity">Количество штук: -</string>
+    <string name="convertedTotalPricePerUnit">Конвертированная стоимость за штуку: —</string>
+    <string name="convertedTotalPrice">Конвертированная итоговая стоимость: —</string>
+    <string name="pricePerSpecialType">Цена за …: -</string>
+    <string name="quantityPerType">Взято (вес/объём): -</string>
+    <string name="pricePerOneByType">Стоимость за 1 кг / 1 г / 1 л: -</string>
+    <string name="convertedTotalPricePerUnitByType">Конвертированная стоимость за кг/г/л: —</string>
+    <string name="convertedTotalPricePerType">Конвертированная стоимость за 1 кг / 100 г / 1 л: —</string>
+    <string name="currencySelected">selected</string>
+    <string name="favoriteToggle">favorite toggle</string>
+</resources>
