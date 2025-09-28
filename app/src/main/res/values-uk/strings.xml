@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rustic Price Convertor</string>
+    <string name="search_currency">Пошук валюти</string>
+    <string name="choose_currencies">ВАЛЮТИ</string>
+
+    <string name="price_input">Ціна</string>
+    <string name="quantity_input">Кількість</string>
+    <string name="price_for_label">Ціна вказана за:</string>
+    <string name="count">Кількість</string>
+
+    <string name="section_current">Поточна</string>
+    <string name="section_recent">Останні</string>
+    <string name="section_selected">Вибрані</string>
+    <string name="section_favorites">Обрані</string>
+    <string name="section_others">Інші</string>
+    <string name="title_base_currency">Базова валюта</string>
+    <string name="title_secondary_currencies">Валюти для конвертації (мін. 1, макс. 5)</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_close">Закрити</string>
+    <string name="warn_need_at_least_one">Потрібно вибрати щонайменше одну валюту</string>
+
+    <string name="err_load_currencies">Не вдалося завантажити список валют</string>
+    <string name="err_fetch_rates">Не вдалося отримати курси для %1$s</string>
+    <string name="dash_price">Ціна за —: —</string>
+    <string name="dash">—</string>
+
+    <string name="hint_amount_for_price_volume">за скільки мл/л вказано ціну</string>
+    <string name="hint_amount_for_price_weight">за скільки г/кг вказано ціну</string>
+    <string name="hint_qty_pieces">Кількість штук</string>
+    <string name="hint_qty_l">Об’єм, л</string>
+    <string name="hint_qty_ml">Об’єм, мл</string>
+    <string name="hint_qty_kg">Маса, кг</string>
+    <string name="hint_qty_g">Маса, г</string>
+
+    <string name="piece_price">Ціна за штуку: %1$.2f %2$s</string>
+    <string name="piece_count">Кількість штук: %1$d</string>
+    <string name="converted_per_piece_title">Сконвертована вартість за штуку:</string>
+    <string name="converted_total_title">Сконвертована підсумкова вартість:</string>
+
+    <string name="price_for">Ціна за </string>
+    <string name="price_per_any_format">%1$s: %2$.2f %3$s</string>
+    <string name="taken_generic">Взято (%1$s): %2$s</string>
+    <string name="cost_per_kg_and_100g">Вартість за 1 кг / 100 г: %1$.2f / %2$.2f %3$s</string>
+    <string name="cost_per_l_and_100ml">Вартість за 1 л / 100 мл: %1$.2f / %2$.2f %3$s</string>
+    <string name="converted_per_kg_title">Сконвертована вартість за 1 кг:</string>
+    <string name="converted_per_100g_title">Сконвертована вартість за 100 г:</string>
+    <string name="converted_per_l_title">Сконвертована вартість за 1 л:</string>
+    <string name="converted_per_100ml_title">Сконвертована вартість за 100 мл:</string>
+    <string name="converted_total_weight_title">Сконвертована підсумкова вартість:</string>
+    <string name="language_ro">Română</string>
+    <string name="currency_selected">selected</string>
+    <string name="favorite_toggle">favorite toggle</string>
+    <string name="language_ru">Русский</string>
+    <string name="language_uk">Українська</string>
+    <string name="language_en">English</string>
+
+    <string name="unit_piece">шт.</string>
+    <string name="unit_kg">кг</string>
+    <string name="unit_g">г</string>
+    <string name="unit_l">л</string>
+    <string name="unit_ml">мл</string>
+
+    <string-array name="units_main">
+        <item>@string/unit_piece</item>
+        <item>@string/unit_kg</item>
+        <item>@string/unit_g</item>
+        <item>@string/unit_l</item>
+        <item>@string/unit_ml</item>
+    </string-array>
+
+    <string-array name="units_mass">
+        <item>@string/unit_g</item>
+        <item>@string/unit_kg</item>
+    </string-array>
+
+    <string-array name="units_volume">
+        <item>@string/unit_ml</item>
+        <item>@string/unit_l</item>
+    </string-array>
+
+    <string name="price_amount_hint_volume">скільки мл/л зазначено в ціні</string>
+    <string name="price_amount_hint_mass">скільки г/кг зазначено в ціні</string>
+</resources>

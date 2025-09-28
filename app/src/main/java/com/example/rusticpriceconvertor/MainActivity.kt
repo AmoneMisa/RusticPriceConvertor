@@ -66,8 +66,17 @@ class MainActivity : AppCompatActivity() {
     private var selectedSymbols: MutableList<String> = mutableListOf("USD", "EUR")
     private var rates: Map<String, Double> = emptyMap()
 
-    // единые prefs (без дублей)
     private val prefs by lazy { getSharedPreferences("currency_prefs", MODE_PRIVATE) }
+
+    override fun attachBaseContext(newBase: Context) {
+        val sp = newBase.getSharedPreferences("currency_prefs", MODE_PRIVATE)
+        val saved = sp.getString("app_lang", null)
+            ?: detectDeviceLanguage()
+            ?: detectLanguageByGeo(newBase)
+            ?: "en"
+        val wrapped = LanguageUtil.applyLocale(newBase, saved)
+        super.attachBaseContext(wrapped)
+    }
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         bindViews()
+        setupLanguageSpinner()
 
         // пока не загрузим список валют — вырубим элементы
         baseCurrencySpinner.isEnabled = false
@@ -113,6 +123,41 @@ class MainActivity : AppCompatActivity() {
         convertedPerUnitLabel = findViewById(R.id.convertedPerUnitLabel)
         convertedPerBaseUnitLabel = findViewById(R.id.convertedPerBaseUnitLabel)
         convertedTotalLabel = findViewById(R.id.convertedTotalLabel)
+    }
+
+    private fun setupLanguageSpinner() {
+        val langs = listOf(
+            LangItem("ru", "RU", R.string.language_ru),
+            LangItem("uk", "UA", R.string.language_uk),
+            LangItem("en", "EN", R.string.language_en),
+            LangItem("ro", "RO", R.string.language_ro),
+        )
+
+        val spinner = findViewById<Spinner>(R.id.langSpinner)
+        val adapter = LangAdapter(this, langs)
+        spinner.adapter = adapter
+
+        // порядок дефолта: сохранённый -> язык телефона -> по гео -> en
+        val saved = prefs.getString("app_lang", null)
+            ?: detectDeviceLanguage()                 // "ru"/"uk"/"en"/"ro" или null
+            ?: detectLanguageByGeo(this)              // "ru"/"uk"/"ro"/"en"
+            ?: "en"
+
+        val idx = langs.indexOfFirst { it.persistCode == saved }.coerceAtLeast(0)
+
+        // ВАЖНО: сначала ставим позицию, затем вешаем listener
+        spinner.setSelection(idx, false)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
+                val code = langs[pos].persistCode
+                if (code == prefs.getString("app_lang", null)) return
+                prefs.edit { putString("app_lang", code) }
+                LanguageUtil.applyLocale(this@MainActivity, code)
+                recreate()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
     }
 
     // ========= Валюты: загрузка + привязка =========
@@ -231,52 +276,49 @@ class MainActivity : AppCompatActivity() {
 
     // ========= Единицы товара =========
     private fun setupUnitSpinner() {
-        val units = listOf("шт.", "кг", "г", "л", "мл")
+        val units = resources.getStringArray(R.array.units_main).toList()
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, units)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         quantityTypeSpinner.adapter = adapter
 
         quantityTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 setupPriceUnitOptions()
                 recalc()
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
     private fun setupPriceUnitOptions() {
-        val sellUnit = (quantityTypeSpinner.selectedItem ?: "шт.").toString()
+        val unitPiece = getString(R.string.unit_piece)
+        val unitMl = getString(R.string.unit_ml)
+        val unitL  = getString(R.string.unit_l)
+        val unitG  = getString(R.string.unit_g)
+        val unitKg = getString(R.string.unit_kg)
 
-        // для штучного режима эта строка не нужна
-        if (sellUnit == "шт.") {
+        val sellUnit = (quantityTypeSpinner.selectedItem ?: unitPiece).toString()
+
+        if (sellUnit == unitPiece) {
             priceUnitRow.visibility = View.GONE
             return
         }
-
         priceUnitRow.visibility = View.VISIBLE
 
         val opts = when (sellUnit) {
-            "л", "мл" -> listOf("мл", "л")
-            else      -> listOf("г", "кг")
+            unitL, unitMl -> resources.getStringArray(R.array.units_volume).toList()
+            else          -> resources.getStringArray(R.array.units_mass).toList()
         }
+
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opts)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         priceUnitSpinner.adapter = adapter
 
-        // дефолт: 1 единица (чтобы было «за 1 л» / «за 1 кг» и т.д.)
         if (priceAmountInput.text.isNullOrBlank()) priceAmountInput.setText("1")
-        priceAmountInput.hint =
-            if (opts.first() == "мл")
-                getString(R.string.hint_amount_for_price_volume)
-            else
-                getString(R.string.hint_amount_for_price_weight)
+        priceAmountInput.hint = if (opts.first() == unitMl)
+            getString(R.string.price_amount_hint_volume)
+        else
+            getString(R.string.price_amount_hint_mass)
     }
 
     private fun attachRecalcListeners() {
@@ -297,11 +339,11 @@ class MainActivity : AppCompatActivity() {
 
     // ========= Расчёты =========
     private fun recalc() {
-        val sellUnit = (quantityTypeSpinner.selectedItem ?: "шт.").toString()
+        val sellUnit = (quantityTypeSpinner.selectedItem ?: getString(R.string.unit_piece)).toString()
         val price = priceInput.text.toString().toDoubleOrNull() ?: 0.0
         val qty = quantityInput.text.toString().toDoubleOrNull() ?: 0.0
 
-        if (sellUnit == "шт.") {
+        if (sellUnit == getString(R.string.unit_piece)) {
             showPieceMode()
             val total = price * qty
             piecePriceLabel.text = getString(R.string.piece_price, price, base())
@@ -329,22 +371,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         // ===== ОБЪЁМ =====
-        if (sellUnit == "л" || sellUnit == "мл") {
+        if (sellUnit == getString(R.string.unit_l) || sellUnit == getString(R.string.unit_ml)) {
             val pkgMl = when (unitOfPrice) {
-                "л"  -> amountOfPrice * 1000.0
+                getString(R.string.unit_l)  -> amountOfPrice * 1000.0
                 else -> amountOfPrice // "мл"
             }
             val perMl = price / pkgMl
             val perL  = perMl * 1000.0
             val per100ml = perMl * 100.0
 
-            val qtyMl = if (sellUnit == "л") qty * 1000.0 else qty
+            val qtyMl = if (sellUnit == getString(R.string.unit_l)) qty * 1000.0 else qty
             val total = perMl * qtyMl
 
             pricePerUnitLabel.text =
                 getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
                         String.format("%.2f %s", price, base())
-            takenAmountLabel.text = getString(R.string.taken_generic, "мл", trimZeros(qtyMl))
+            takenAmountLabel.text = getString(R.string.taken_generic, getString(R.string.unit_ml), trimZeros(qtyMl))
             costPerBaseUnitLabel.text =
                 getString(R.string.cost_per_l_and_100ml, perL, per100ml, base())
 
@@ -359,20 +401,20 @@ class MainActivity : AppCompatActivity() {
 
         // ===== ВЕС ===== (sellUnit == "кг" или "г")
         val pkgG = when (unitOfPrice) {
-            "кг" -> amountOfPrice * 1000.0
+            getString(R.string.unit_kg) -> amountOfPrice * 1000.0
             else -> amountOfPrice // "г"
         }
         val perGram = price / pkgG
         val perKg   = perGram * 1000.0
         val per100g = perGram * 100.0
 
-        val qtyGram = if (sellUnit == "кг") qty * 1000.0 else qty
+        val qtyGram = if (sellUnit == getString(R.string.unit_kg)) qty * 1000.0 else qty
         val total = perGram * qtyGram
 
         pricePerUnitLabel.text =
             getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
                     String.format("%.2f %s", price, base())
-        takenAmountLabel.text = getString(R.string.taken_generic, "г", trimZeros(qtyGram))
+        takenAmountLabel.text = getString(R.string.taken_generic, getString(R.string.unit_g), trimZeros(qtyGram))
         costPerBaseUnitLabel.text =
             getString(R.string.cost_per_kg_and_100g, perKg, per100g, base())
 
@@ -398,11 +440,11 @@ class MainActivity : AppCompatActivity() {
         priceUnitRow.visibility = View.VISIBLE
         modePiece.visibility = View.GONE
         modeWeight.visibility = View.VISIBLE
-        val sellUnit = (quantityTypeSpinner.selectedItem ?: "кг").toString()
+        val sellUnit = (quantityTypeSpinner.selectedItem ?: getString(R.string.unit_kg)).toString()
         quantityInput.hint = when (sellUnit) {
-            "л"  -> getString(R.string.hint_qty_l)
-            "мл" -> getString(R.string.hint_qty_ml)
-            "кг" -> getString(R.string.hint_qty_kg)
+            getString(R.string.unit_l)  -> getString(R.string.hint_qty_l)
+            getString(R.string.unit_ml) -> getString(R.string.hint_qty_ml)
+            getString(R.string.unit_kg) -> getString(R.string.hint_qty_kg)
             else -> getString(R.string.hint_qty_g)
         }
     }

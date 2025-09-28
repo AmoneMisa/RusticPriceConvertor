@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rustic Price Convertor</string>
+    <string name="search_currency">Căutare valută</string>
+    <string name="choose_currencies">VALUTE</string>
+
+    <string name="price_input">Preț</string>
+    <string name="quantity_input">Cantitate</string>
+    <string name="price_for_label">Preț indicat pentru:</string>
+    <string name="count">Cantitate</string>
+
+    <string name="section_current">Curentă</string>
+    <string name="section_recent">Recente</string>
+    <string name="section_selected">Selectate</string>
+    <string name="section_favorites">Favorite</string>
+    <string name="section_others">Altele</string>
+    <string name="title_base_currency">Valuta de bază</string>
+    <string name="title_secondary_currencies">Valute pentru conversie (min. 1, max. 5)</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_close">Închide</string>
+    <string name="warn_need_at_least_one">Selectează cel puțin o valută</string>
+
+    <string name="err_load_currencies">Nu s-a putut încărca lista de valute</string>
+    <string name="err_fetch_rates">Nu s-au putut obține cursurile pentru %1$s</string>
+    <string name="dash_price">Preț pentru —: —</string>
+    <string name="dash">—</string>
+
+    <string name="hint_amount_for_price_volume">pentru câți ml/L este prețul</string>
+    <string name="hint_amount_for_price_weight">pentru câte g/kg este prețul</string>
+    <string name="hint_qty_pieces">Număr de bucăți</string>
+    <string name="hint_qty_l">Volum, L</string>
+    <string name="hint_qty_ml">Volum, ml</string>
+    <string name="hint_qty_kg">Greutate, kg</string>
+    <string name="hint_qty_g">Greutate, g</string>
+
+    <string name="piece_price">Preț pe bucată: %1$.2f %2$s</string>
+    <string name="piece_count">Bucăți: %1$d</string>
+    <string name="converted_per_piece_title">Preț convertit pe bucată:</string>
+    <string name="converted_total_title">Preț total convertit:</string>
+
+    <string name="price_for">Preț pentru </string>
+    <string name="price_per_any_format">%1$s: %2$.2f %3$s</string>
+    <string name="taken_generic">Luate (%1$s): %2$s</string>
+    <string name="cost_per_kg_and_100g">Cost pe 1 kg / 100 g: %1$.2f / %2$.2f %3$s</string>
+    <string name="cost_per_l_and_100ml">Cost pe 1 L / 100 ml: %1$.2f / %2$.2f %3$s</string>
+    <string name="converted_per_kg_title">Preț convertit pe 1 kg:</string>
+    <string name="converted_per_100g_title">Preț convertit pe 100 g:</string>
+    <string name="converted_per_l_title">Preț convertit pe 1 L:</string>
+    <string name="converted_per_100ml_title">Preț convertit pe 100 ml:</string>
+    <string name="converted_total_weight_title">Preț total convertit:</string>
+    <string name="language_en">English</string>
+    <string name="language_ro">Română</string>
+    <string name="currency_selected">selected</string>
+    <string name="favorite_toggle">favorite toggle</string>
+    <string name="language_ru">Русский</string>
+    <string name="language_uk">Українська</string>
+
+    <string name="unit_piece">buc.</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_g">g</string>
+    <string name="unit_l">l</string>
+    <string name="unit_ml">ml</string>
+
+    <string-array name="units_main">
+        <item>@string/unit_piece</item>
+        <item>@string/unit_kg</item>
+        <item>@string/unit_g</item>
+        <item>@string/unit_l</item>
+        <item>@string/unit_ml</item>
+    </string-array>
+
+    <string-array name="units_mass">
+        <item>@string/unit_g</item>
+        <item>@string/unit_kg</item>
+    </string-array>
+
+    <string-array name="units_volume">
+        <item>@string/unit_ml</item>
+        <item>@string/unit_l</item>
+    </string-array>
+
+    <string name="price_amount_hint_volume">câte ml/L sunt indicate în preț</string>
+    <string name="price_amount_hint_mass">câte g/kg sunt indicate în preț</string>
+</resources>

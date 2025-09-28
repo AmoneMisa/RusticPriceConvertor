@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rustic Price Convertor</string>
+    <string name="search_currency">Search currency</string>
+    <string name="choose_currencies">CURRENCIES</string>
+
+    <string name="price_input">Price</string>
+    <string name="quantity_input">Quantity</string>
+    <string name="price_for_label">Price specified for:</string>
+    <string name="count">Count</string>
+
+    <!-- Sections / dialogs -->
+    <string name="section_current">Current</string>
+    <string name="section_recent">Recent</string>
+    <string name="section_selected">Selected</string>
+    <string name="section_favorites">Favorites</string>
+    <string name="section_others">Others</string>
+    <string name="title_base_currency">Base currency</string>
+    <string name="title_secondary_currencies">Conversion currencies (min. 1, max. 5)</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_close">Close</string>
+    <string name="warn_need_at_least_one">You need to select at least one currency</string>
+
+    <!-- Errors -->
+    <string name="err_load_currencies">Failed to load currencies</string>
+    <string name="err_fetch_rates">Failed to fetch rates for %1$s</string>
+    <string name="dash_price">Price for —: —</string>
+    <string name="dash">—</string>
+
+    <!-- Hints -->
+    <string name="hint_amount_for_price_volume">how many ml/L the price is for</string>
+    <string name="hint_amount_for_price_weight">how many g/kg the price is for</string>
+    <string name="hint_qty_pieces">Number of items</string>
+    <string name="hint_qty_l">Volume, L</string>
+    <string name="hint_qty_ml">Volume, ml</string>
+    <string name="hint_qty_kg">Weight, kg</string>
+    <string name="hint_qty_g">Weight, g</string>
+
+    <!-- Piece mode -->
+    <string name="piece_price">Price per item: %1$.2f %2$s</string>
+    <string name="piece_count">Items: %1$d</string>
+    <string name="converted_per_piece_title">Converted price per item:</string>
+    <string name="converted_total_title">Converted total price:</string>
+
+    <!-- Weight / volume -->
+    <string name="price_for">Price for </string>
+    <string name="price_per_any_format">%1$s: %2$.2f %3$s</string>
+    <string name="taken_generic">Taken (%1$s): %2$s</string>
+    <string name="cost_per_kg_and_100g">Cost per 1 kg / 100 g: %1$.2f / %2$.2f %3$s</string>
+    <string name="cost_per_l_and_100ml">Cost per 1 L / 100 ml: %1$.2f / %2$.2f %3$s</string>
+    <string name="converted_per_kg_title">Converted price per 1 kg:</string>
+    <string name="converted_per_100g_title">Converted price per 100 g:</string>
+    <string name="converted_per_l_title">Converted price per 1 L:</string>
+    <string name="converted_per_100ml_title">Converted price per 100 ml:</string>
+    <string name="converted_total_weight_title">Converted total price:</string>
+    <string name="language_ro">Română</string>
+    <string name="currency_selected">selected</string>
+    <string name="favorite_toggle">favorite toggle</string>
+    <string name="language_ru">Русский</string>
+    <string name="language_uk">Українська</string>
+    <string name="language_en">English</string>
+
+    <!-- Units -->
+    <string name="unit_piece">pcs.</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_g">g</string>
+    <string name="unit_l">l</string>
+    <string name="unit_ml">ml</string>
+
+    <!-- Arrays for spinners -->
+    <string-array name="units_main">
+        <item>@string/unit_piece</item>
+        <item>@string/unit_kg</item>
+        <item>@string/unit_g</item>
+        <item>@string/unit_l</item>
+        <item>@string/unit_ml</item>
+    </string-array>
+
+    <string-array name="units_mass">
+        <item>@string/unit_g</item>
+        <item>@string/unit_kg</item>
+    </string-array>
+
+    <string-array name="units_volume">
+        <item>@string/unit_ml</item>
+        <item>@string/unit_l</item>
+    </string-array>
+
+    <!-- Hints for “price amount” -->
+    <string name="price_amount_hint_volume">how many ml/L the price is for</string>
+    <string name="price_amount_hint_mass">how many g/kg the price is for</string>
+</resources>
