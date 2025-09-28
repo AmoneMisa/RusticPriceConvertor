@@ -31,7 +31,7 @@
         android:layout_width="124dp"
         android:layout_height="67dp"
         android:layout_marginTop="8dp"
-        android:text="@string/chooseCurrencies"
+        android:text="@string/choose_currencies"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +39,7 @@
         android:id="@+id/labelPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/priceInput"
+        android:text="@string/price_input"
         android:textStyle="bold"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
         android:id="@+id/priceInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/priceInput"
+        android:hint="@string/price_input"
         android:inputType="numberDecimal"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,10 +64,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/quantityInput"
+        android:text="@string/quantity_input"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/priceInput"
-        android:textStyle="bold" />
+        app:layout_constraintTop_toBottomOf="@id/priceInput" />
 
     <LinearLayout
         android:id="@+id/qtyRow"
@@ -83,9 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/quantityInput"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:hint="@string/quantity_input"
             android:inputType="numberDecimal" />
 
         <Spinner
@@ -111,7 +109,7 @@
             android:id="@+id/labelPriceUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/priceFerType" />
+            android:text="@string/price_for_label" />
 
         <!-- сколько этих единиц соответствует цене -->
         <EditText
@@ -147,28 +145,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/totalPricePerUnit" />
+            android:text="@string/piece_price" />
 
         <TextView
             android:id="@+id/pieceCountLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/totalUnitsQuantity" />
+            android:text="@string/piece_count" />
 
         <TextView
             android:id="@+id/pieceConvertedPerItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/convertedTotalPricePerUnit" />
+            android:text="@string/converted_per_piece_title" />
 
         <TextView
             android:id="@+id/pieceConvertedTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/convertedTotalPrice" />
+            android:text="@string/converted_total_title" />
     </LinearLayout>
 
     <!-- ===== РЕЖИМ: ВЕС/ОБЪЁМ ===== -->
@@ -188,42 +186,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/pricePerSpecialType" />
+            android:text="@string/price_for" />
 
         <TextView
             android:id="@+id/takenAmountLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/quantityPerType" />
+            android:text="@string/price_for" />
 
         <TextView
             android:id="@+id/costPerBaseUnitLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/pricePerOneByType" />
+            android:text="@string/price_per_any_format" />
 
         <TextView
             android:id="@+id/convertedPerUnitLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="@string/convertedTotalPricePerUnitByType" />
+            android:text="@string/taken_generic" />
 
         <TextView
             android:id="@+id/convertedPerBaseUnitLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/convertedTotalPricePerType" />
+            android:text="@string/cost_per_kg_and_100g" />
 
         <TextView
             android:id="@+id/convertedTotalLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/convertedTotalPrice" />
+            android:text="@string/cost_per_l_and_100ml" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

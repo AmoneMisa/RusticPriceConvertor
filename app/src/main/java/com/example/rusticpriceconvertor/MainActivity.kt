@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
             } else if (cached.isEmpty()) {
                 Toast.makeText(
                     this@MainActivity,
-                    "Не удалось загрузить список валют",
+                    getString(R.string.err_load_currencies),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
             } else if (cached.isEmpty() && targets.isNotEmpty()) {
                 Toast.makeText(
                     this@MainActivity,
-                    "Не удалось получить курсы для $base",
+                    getString(R.string.err_fetch_rates, base),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -272,7 +272,11 @@ class MainActivity : AppCompatActivity() {
 
         // дефолт: 1 единица (чтобы было «за 1 л» / «за 1 кг» и т.д.)
         if (priceAmountInput.text.isNullOrBlank()) priceAmountInput.setText("1")
-        priceAmountInput.hint = if (opts.first() == "мл") "сколько мл/л указано в цене" else "сколько г/кг указано в цене"
+        priceAmountInput.hint =
+            if (opts.first() == "мл")
+                getString(R.string.hint_amount_for_price_volume)
+            else
+                getString(R.string.hint_amount_for_price_weight)
     }
 
     private fun attachRecalcListeners() {
@@ -300,10 +304,12 @@ class MainActivity : AppCompatActivity() {
         if (sellUnit == "шт.") {
             showPieceMode()
             val total = price * qty
-            piecePriceLabel.text = "Цена за штуку: %.2f %s".format(price, base())
-            pieceCountLabel.text = "Количество штук: ${qty.toInt()}"
-            pieceConvertedPerItem.text = "Конвертированная стоимость за штуку:\n${formatConverted(price)}"
-            pieceConvertedTotal.text  = "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
+            piecePriceLabel.text = getString(R.string.piece_price, price, base())
+            pieceCountLabel.text = getString(R.string.piece_count, qty.toInt())
+            pieceConvertedPerItem.text =
+                getString(R.string.converted_per_piece_title) + "\n" + formatConverted(price)
+            pieceConvertedTotal.text  =
+                getString(R.string.converted_total_title) + "\n" + formatConverted(total)
             return
         }
 
@@ -313,12 +319,12 @@ class MainActivity : AppCompatActivity() {
         val amountOfPrice = priceAmountInput.text.toString().toDoubleOrNull() ?: 0.0
         if (amountOfPrice <= 0.0) {
             // пустая/некорректная цена-за — просто показываем прочерки
-            pricePerUnitLabel.text = "Цена за —: —"
-            takenAmountLabel.text = "—"
-            costPerBaseUnitLabel.text = "—"
-            convertedPerUnitLabel.text = "—"
-            convertedPerBaseUnitLabel.text = "—"
-            convertedTotalLabel.text = "—"
+            pricePerUnitLabel.text = getString(R.string.dash_price)
+            takenAmountLabel.text = getString(R.string.dash)
+            costPerBaseUnitLabel.text = getString(R.string.dash)
+            convertedPerUnitLabel.text = getString(R.string.dash)
+            convertedPerBaseUnitLabel.text = getString(R.string.dash)
+            convertedTotalLabel.text = getString(R.string.dash)
             return
         }
 
@@ -335,16 +341,19 @@ class MainActivity : AppCompatActivity() {
             val qtyMl = if (sellUnit == "л") qty * 1000.0 else qty
             val total = perMl * qtyMl
 
-            pricePerUnitLabel.text = getString(R.string.priceFor)+ "${trimZeros(amountOfPrice)} $unitOfPrice: %.2f %s".format(price, base())
-            takenAmountLabel.text   = "Взято (мл): ${trimZeros(qtyMl)}"
-            costPerBaseUnitLabel.text = "Стоимость за 1 л / 100 мл\n: %.2f / %.2f %s".format(perL, per100ml, base())
+            pricePerUnitLabel.text =
+                getString(R.string.price_for) + "${trimZeros(amountOfPrice)} $unitOfPrice: " +
+                        String.format("%.2f %s", price, base())
+            takenAmountLabel.text = getString(R.string.taken_generic, "мл", trimZeros(qtyMl))
+            costPerBaseUnitLabel.text =
+                getString(R.string.cost_per_l_and_100ml, perL, per100ml, base())
 
             convertedPerUnitLabel.text =
-                "Конвертированная стоимость за 1 л:\n${formatConverted(perL)}"
+                getString(R.string.converted_per_l_title) + "\n" + formatConverted(perL)
             convertedPerBaseUnitLabel.text =
-                "Конвертированная стоимость за 100 мл:\n${formatConverted(per100ml)}"
+                getString(R.string.converted_per_100ml_title) + "\n" + formatConverted(per100ml)
             convertedTotalLabel.text =
-                "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
+                getString(R.string.converted_total_weight_title) + "\n" + formatConverted(total)
             return
         }
 
@@ -360,16 +369,19 @@ class MainActivity : AppCompatActivity() {
         val qtyGram = if (sellUnit == "кг") qty * 1000.0 else qty
         val total = perGram * qtyGram
 
-        pricePerUnitLabel.text   = "Цена за ${trimZeros(amountOfPrice)} $unitOfPrice: %.2f %s".format(price, base())
-        takenAmountLabel.text    = "Взято (г): ${trimZeros(qtyGram)}"
-        costPerBaseUnitLabel.text = "Стоимость за 1 кг / 100 г: %.2f / %.2f %s".format(perKg, per100g, base())
+        pricePerUnitLabel.text =
+            getString(R.string.price_for) + "${trimZeros(amountOfPrice)} $unitOfPrice: " +
+                    String.format("%.2f %s", price, base())
+        takenAmountLabel.text = getString(R.string.taken_generic, "г", trimZeros(qtyGram))
+        costPerBaseUnitLabel.text =
+            getString(R.string.cost_per_kg_and_100g, perKg, per100g, base())
 
         convertedPerUnitLabel.text =
-            "Конвертированная стоимость за 1 кг:\n${formatConverted(perKg)}"
+            getString(R.string.converted_per_kg_title) + "\n" + formatConverted(perKg)
         convertedPerBaseUnitLabel.text =
-            "Конвертированная стоимость за 100 г:\n${formatConverted(per100g)}"
+            getString(R.string.converted_per_100g_title) + "\n" + formatConverted(per100g)
         convertedTotalLabel.text =
-            "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
+            getString(R.string.converted_total_weight_title) + "\n" + formatConverted(total)
     }
 
 
@@ -379,7 +391,7 @@ class MainActivity : AppCompatActivity() {
         priceUnitRow.visibility = View.GONE
         modePiece.visibility = View.VISIBLE
         modeWeight.visibility = View.GONE
-        quantityInput.hint = "Количество штук"
+        quantityInput.hint = getString(R.string.hint_qty_pieces)
     }
 
     private fun showWeightMode() {
@@ -388,10 +400,10 @@ class MainActivity : AppCompatActivity() {
         modeWeight.visibility = View.VISIBLE
         val sellUnit = (quantityTypeSpinner.selectedItem ?: "кг").toString()
         quantityInput.hint = when (sellUnit) {
-            "л"  -> "Объём, л"
-            "мл" -> "Объём, мл"
-            "кг" -> "Вес, кг"
-            else -> "Вес, г"
+            "л"  -> getString(R.string.hint_qty_l)
+            "мл" -> getString(R.string.hint_qty_ml)
+            "кг" -> getString(R.string.hint_qty_kg)
+            else -> getString(R.string.hint_qty_g)
         }
     }
 
@@ -481,14 +493,14 @@ class MainActivity : AppCompatActivity() {
         fun rebuild(q: String) {
             val filtered = filter.filter(q)
             val current = all.find { it.code == currentCode }
-            adapter.submitList(CurrencySectionBuilder.forBase(current, recents, all, filtered))
+            adapter.submitList(CurrencySectionBuilder.forBase(this, current, recents, all, filtered))
         }
 
         if (baseDialog?.isShowing == true) return
         baseDialog = AlertDialog.Builder(this)
-            .setCustomTitle(buildCenteredTitle("Основная валюта"))
+            .setCustomTitle(buildCenteredTitle(getString(R.string.title_base_currency)))
             .setView(view)
-            .setNegativeButton("Закрыть", null)
+            .setNegativeButton(getString(R.string.btn_close), null)
             .create().also { dlg ->
                 dlg.setOnDismissListener { baseDialog = null }
                 dlg.show()
@@ -535,6 +547,7 @@ class MainActivity : AppCompatActivity() {
             currentQuery = q
             val filtered = filter.filter(q)
             val data = CurrencySectionBuilder.forSecondary(
+                this,
                 selected = buildSelectedRows(),
                 favorites = buildFavoriteRows(),
                 all = all,
@@ -567,12 +580,12 @@ class MainActivity : AppCompatActivity() {
         rv.adapter = adapter
 
         val dlg = AlertDialog.Builder(this)
-            .setCustomTitle(buildCenteredTitle("Валюты для конвертации (мин. 1, макс. 5)"))
+            .setCustomTitle(buildCenteredTitle(getString(R.string.title_secondary_currencies)))
             .setView(view)
-            .setPositiveButton("OK") { d, _ ->
+            .setPositiveButton(getString(R.string.btn_ok)) { d, _ ->
                 val list = selected.toList().filter { it != baseNow }.take(5)
                 if (list.isEmpty()) {
-                    Toast.makeText(this, "Нужно выбрать хотя бы одну валюту", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, getString(R.string.warn_need_at_least_one), Toast.LENGTH_SHORT)
                         .show()
                 } else {
                     selectedSymbols = list.toMutableList()
@@ -581,7 +594,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 d.dismiss()
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(getString(R.string.btn_close), null)
             .create()
 
         dlg.show()

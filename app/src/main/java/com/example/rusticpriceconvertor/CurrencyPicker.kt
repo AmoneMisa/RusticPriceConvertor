@@ -46,6 +46,7 @@ class CurrencyFilter(
 object CurrencySectionBuilder {
 
     fun forBase(
+        ctx: Context,
         current: Row.Currency?,                   // выбранная базовая
         recents: List<Row.Currency>,              // последние
         all: List<Row.Currency>,                  // всё (не обязательно, но оставим для симметрии)
@@ -55,25 +56,26 @@ object CurrencySectionBuilder {
 
         // Текущая
         if (current != null) {
-            out += Row.SectionHeader("Текущая")
+            out += Row.SectionHeader(ctx.getString(R.string.section_current))
             out += listOf(current)
             out += Row.Divider
         }
 
         // Последние (с иконкой часов)
         if (recents.isNotEmpty()) {
-            out += Row.SectionHeader("Последние", iconRes = R.drawable.ic_access_time_24)
+            out += Row.SectionHeader(ctx.getString(R.string.section_recent), iconRes = R.drawable.ic_access_time_24)
             out += recents
             out += Row.Divider
         }
 
         // Остальные (фильтрованные)
-        out += Row.SectionHeader("Остальные")
+        out += Row.SectionHeader(ctx.getString(R.string.section_others))
         out += filteredAll
         return out
     }
 
     fun forSecondary(
+        ctx: Context,
         selected: List<Row.Currency>,             // уже выбранные
         favorites: List<Row.Currency>,            // избранные
         all: List<Row.Currency>,                  // всё
@@ -90,18 +92,16 @@ object CurrencySectionBuilder {
 
         val out = mutableListOf<Row>()
         if (selected.isNotEmpty()) {
-            out += Row.SectionHeader("Выбранные")
-            // уважаем поисковый фильтр — при поиске оставляем только попавших
+            out += Row.SectionHeader(ctx.getString(R.string.section_selected))
             out += selected.filter { s -> filteredAll.any { it.code == s.code } }
             out += Row.Divider
         }
         if (filteredFavs.isNotEmpty()) {
-            // по требованию — заголовок без сердечка-иконки
-            out += Row.SectionHeader("Избранные")
+            out += Row.SectionHeader(ctx.getString(R.string.section_favorites))
             out += filteredFavs
             out += Row.Divider
         }
-        out += Row.SectionHeader("Остальные")
+        out += Row.SectionHeader(ctx.getString(R.string.section_others))
         out += others
         return out
     }

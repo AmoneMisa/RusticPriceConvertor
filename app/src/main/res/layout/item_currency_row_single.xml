@@ -16,5 +16,5 @@
     <ImageView
         android:id="@+id/check"
         android:layout_width="20dp" android:layout_height="20dp"
-        android:contentDescription="@string/currencySelected" />
+        android:contentDescription="@string/currency_selected" />
 </LinearLayout>
