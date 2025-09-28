@@ -10,29 +10,48 @@
 
     <!-- Общий ввод -->
 
-
-    <Spinner
-        android:id="@+id/langSpinner"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="296dp"
-        android:layout_marginTop="40dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:id="@+id/logoLine"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:contentDescription="@string/app_name"
+            android:src="@mipmap/ic_launcher_round"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/langSpinner"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="185dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/currencyLine"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/langSpinner">
+        app:layout_constraintTop_toBottomOf="@id/logoLine">
 
         <Spinner
             android:id="@+id/baseCurrencySpinner"
-            android:layout_width="80dp"
+            android:layout_width="130dp"
             android:layout_height="40dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
@@ -45,9 +64,10 @@
             android:id="@+id/selectCurrenciesButton"
             android:layout_width="169dp"
             android:layout_height="50dp"
-            android:layout_marginStart="130dp"
+            android:layout_marginStart="80dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
+            android:backgroundTint="@color/fav_orange"
             android:text="@string/choose_currencies"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.733"
@@ -61,22 +81,36 @@
         android:layout_width="84dp"
         android:layout_height="18dp"
         android:layout_marginTop="16dp"
+        android:textColor="@color/fav_orange"
+        android:textSize="12sp"
         android:text="@string/price_input"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/currencyLine" />
+        app:layout_constraintTop_toBottomOf="@id/currencyLine"
+        />
 
     <!-- Поле Цена -->
-    <EditText
-        android:id="@+id/priceInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
         android:layout_marginTop="4dp"
-        android:hint="@string/price_input"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:id="@+id/priceLine"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelPrice" />
+        app:layout_constraintTop_toBottomOf="@id/labelPrice"
+        >
+        <EditText
+            android:id="@+id/priceInput"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:hint="@string/price_input"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelPrice" />
+    </LinearLayout>
 
     <!-- Количество + единица товара (шт / кг / г / л) -->
 
@@ -85,27 +119,28 @@
         android:layout_width="84dp"
         android:layout_height="18dp"
         android:layout_marginTop="16dp"
+        android:textColor="@color/fav_orange"
+        android:textSize="13sp"
         android:text="@string/quantity_input"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/priceInput" />
+        app:layout_constraintTop_toBottomOf="@id/priceLine" />
 
     <!-- Для вес/объём: строка 'цена указана за …' -->
     <LinearLayout
         android:id="@+id/qtyRow"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/labelQty">
-
         <EditText
             android:id="@+id/quantityInput"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:hint="@string/quantity_input"
             android:inputType="numberDecimal" />
@@ -114,7 +149,8 @@
             android:id="@+id/quantityTypeSpinner"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:layout_marginStart="12dp" />
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="0dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -259,7 +295,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
