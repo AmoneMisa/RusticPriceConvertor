@@ -324,26 +324,25 @@ class MainActivity : AppCompatActivity() {
 
         // ===== ОБЪЁМ =====
         if (sellUnit == "л" || sellUnit == "мл") {
-            // переводим "цена за N единиц" в миллилитры
             val pkgMl = when (unitOfPrice) {
                 "л"  -> amountOfPrice * 1000.0
                 else -> amountOfPrice // "мл"
             }
-            val perMl = price / pkgMl                           // цена за 1 мл
-            val perL  = perMl * 1000.0                          // цена за 1 л
-            val per100ml = perMl * 100.0                        // цена за 100 мл
+            val perMl = price / pkgMl
+            val perL  = perMl * 1000.0
+            val per100ml = perMl * 100.0
 
             val qtyMl = if (sellUnit == "л") qty * 1000.0 else qty
             val total = perMl * qtyMl
 
-            pricePerUnitLabel.text = "Цена за ${trimZeros(amountOfPrice)} $unitOfPrice: %.2f %s".format(price, base())
+            pricePerUnitLabel.text = getString(R.string.priceFor)+ "${trimZeros(amountOfPrice)} $unitOfPrice: %.2f %s".format(price, base())
             takenAmountLabel.text   = "Взято (мл): ${trimZeros(qtyMl)}"
-            costPerBaseUnitLabel.text = "Стоимость за 1 л / 1 мл: %.2f / %.4f %s".format(perL, perMl, base())
+            costPerBaseUnitLabel.text = "Стоимость за 1 л / 100 мл\n: %.2f / %.2f %s".format(perL, per100ml, base())
 
             convertedPerUnitLabel.text =
-                "Конвертированная стоимость за 1 мл:\n${formatConverted(perMl)}"
+                "Конвертированная стоимость за 1 л:\n${formatConverted(perL)}"
             convertedPerBaseUnitLabel.text =
-                "Конвертированная стоимость:\nза 1 л:\n${formatConverted(perL)}\nза 100 мл:\n${formatConverted(per100ml)}"
+                "Конвертированная стоимость за 100 мл:\n${formatConverted(per100ml)}"
             convertedTotalLabel.text =
                 "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
             return
@@ -363,12 +362,12 @@ class MainActivity : AppCompatActivity() {
 
         pricePerUnitLabel.text   = "Цена за ${trimZeros(amountOfPrice)} $unitOfPrice: %.2f %s".format(price, base())
         takenAmountLabel.text    = "Взято (г): ${trimZeros(qtyGram)}"
-        costPerBaseUnitLabel.text = "Стоимость за 1 кг / 1 г: %.2f / %.4f %s".format(perKg, perGram, base())
+        costPerBaseUnitLabel.text = "Стоимость за 1 кг / 100 г: %.2f / %.2f %s".format(perKg, per100g, base())
 
         convertedPerUnitLabel.text =
-            "Конвертированная стоимость за 1 г:\n${formatConverted(perGram)}"
+            "Конвертированная стоимость за 1 кг:\n${formatConverted(perKg)}"
         convertedPerBaseUnitLabel.text =
-            "Конвертированная стоимость:\nза 1 кг:\n${formatConverted(perKg)}\nза 100 г:\n${formatConverted(per100g)}"
+            "Конвертированная стоимость за 100 г:\n${formatConverted(per100g)}"
         convertedTotalLabel.text =
             "Конвертированная итоговая стоимость:\n${formatConverted(total)}"
     }

@@ -17,4 +17,5 @@
     <string name="currencySelected">selected</string>
     <string name="favoriteToggle">favorite toggle</string>
     <string name="count">Число</string>
+    <string name="priceFor">"Цена за </string>
 </resources>
