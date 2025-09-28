@@ -342,7 +342,7 @@ class MainActivity : AppCompatActivity() {
             val total = perMl * qtyMl
 
             pricePerUnitLabel.text =
-                getString(R.string.price_for) + "${trimZeros(amountOfPrice)} $unitOfPrice: " +
+                getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
                         String.format("%.2f %s", price, base())
             takenAmountLabel.text = getString(R.string.taken_generic, "мл", trimZeros(qtyMl))
             costPerBaseUnitLabel.text =
@@ -370,7 +370,7 @@ class MainActivity : AppCompatActivity() {
         val total = perGram * qtyGram
 
         pricePerUnitLabel.text =
-            getString(R.string.price_for) + "${trimZeros(amountOfPrice)} $unitOfPrice: " +
+            getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
                     String.format("%.2f %s", price, base())
         takenAmountLabel.text = getString(R.string.taken_generic, "г", trimZeros(qtyGram))
         costPerBaseUnitLabel.text =
