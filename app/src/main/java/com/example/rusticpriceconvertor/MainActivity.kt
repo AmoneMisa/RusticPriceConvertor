@@ -490,6 +490,8 @@ class MainActivity : AppCompatActivity() {
     private fun openBaseCurrencyDialogPretty() {
         if (allSymbols.isEmpty()) return
 
+        if (baseDialog?.isShowing == true) return
+
         val view = layoutInflater.inflate(R.layout.dialog_currency_list, null)
         val search = view.findViewById<EditText>(R.id.searchInput)
         val rv = view.findViewById<RecyclerView>(R.id.currencyList)
@@ -508,7 +510,14 @@ class MainActivity : AppCompatActivity() {
                     isSubsequence(t, cur.code.uppercase())
         }
 
-        lateinit var dlg: AlertDialog
+        val dialog = AlertDialog.Builder(this)
+            .setCustomTitle(buildCenteredTitle(getString(R.string.title_base_currency)))
+            .setView(view)
+            .setNegativeButton(R.string.btn_close, null)
+            .create()
+        baseDialog = dialog
+        dialog.setOnDismissListener { baseDialog = null }
+        dialog.show()
 
         val adapter = CurrencyAdapter(
             context = this,
@@ -527,7 +536,7 @@ class MainActivity : AppCompatActivity() {
 
                 pushRecentBase(picked)
                 reloadRates()
-                dlg.dismiss()
+                baseDialog?.dismiss()
             }
         )
         rv.adapter = adapter
@@ -535,18 +544,8 @@ class MainActivity : AppCompatActivity() {
         fun rebuild(q: String) {
             val filtered = filter.filter(q)
             val current = all.find { it.code == currentCode }
-            adapter.submitList(CurrencySectionBuilder.forBase(this, current, recents, all, filtered))
+            adapter.submitList(CurrencySectionBuilder.forBase(ctx = this, current, recents, all, filtered))
         }
-
-        if (baseDialog?.isShowing == true) return
-        baseDialog = AlertDialog.Builder(this)
-            .setCustomTitle(buildCenteredTitle(getString(R.string.title_base_currency)))
-            .setView(view)
-            .setNegativeButton(getString(R.string.btn_close), null)
-            .create().also { dlg ->
-                dlg.setOnDismissListener { baseDialog = null }
-                dlg.show()
-            }
 
         rebuild("")
         search.addTextChangedListener { s -> rebuild(s?.toString() ?: "") }
