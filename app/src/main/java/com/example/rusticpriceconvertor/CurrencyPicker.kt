@@ -226,7 +226,7 @@ class CurrencyAdapter(
                 )
                 val color = ContextCompat.getColor(
                     context,
-                    if (fav) R.color.fav_pink else R.color.light_black
+                    if (fav) R.color.fav_pink else R.color.fav_orange
                 )
                 ImageViewCompat.setImageTintList(vh.heart, ColorStateList.valueOf(color))
             }

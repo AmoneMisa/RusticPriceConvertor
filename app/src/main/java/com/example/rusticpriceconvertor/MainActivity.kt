@@ -16,6 +16,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -519,6 +520,10 @@ class MainActivity : AppCompatActivity() {
         dialog.setOnDismissListener { baseDialog = null }
         dialog.show()
 
+        val orange = ContextCompat.getColor(this, R.color.fav_orange)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(orange)
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(orange)
+
         val adapter = CurrencyAdapter(
             context = this,
             singleMode = true,
@@ -639,6 +644,11 @@ class MainActivity : AppCompatActivity() {
             .create()
 
         dlg.show()
+
+
+        val orange = ContextCompat.getColor(this, R.color.fav_orange)
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(orange)
+        dlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(orange)
         rebuild("")
         search.addTextChangedListener { s -> rebuild(s?.toString() ?: "") }
     }

@@ -1,32 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:gravity="center_vertical"
-    android:paddingHorizontal="12dp">
+    android:layout_height="wrap_content"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingVertical="8dp">
 
     <TextView
         android:id="@+id/code"
-        android:layout_width="56dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="56dp"
         android:textStyle="bold"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:ellipsize="end"
-        android:maxLines="1" />
+        android:textColor="@color/fav_orange"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Сердечко-иконка -->
     <ImageView
         android:id="@+id/favoriteIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:padding="2dp"
-        android:contentDescription="@string/app_name" />
-</LinearLayout>
+        android:contentDescription="@string/favorite_toggle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toEndOf="@id/code"
+        app:layout_constraintEnd_toStartOf="@id/favoriteIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_goneMarginEnd="8dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
