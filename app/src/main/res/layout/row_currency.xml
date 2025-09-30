@@ -9,9 +9,8 @@
 
     <TextView
         android:id="@+id/code"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:minWidth="56dp"
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@color/fav_orange"
@@ -31,7 +30,7 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="300dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:ellipsize="end"
@@ -42,5 +41,6 @@
         app:layout_constraintEnd_toStartOf="@id/favoriteIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_goneMarginEnd="8dp" />
+        app:layout_goneMarginEnd="8dp"
+        app:layout_goneMarginStart="8dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
