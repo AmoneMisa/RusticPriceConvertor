@@ -113,4 +113,5 @@
     <string name="item_n">Товар %1$d</string>
     <string name="delete">Видалити</string>
     <string name="compare_pair_line">%1$s дешевше, ніж %2$s на %3$s (%4$s%%)</string>
+    <string name="compare_max_items">Можна порівняти максимум %1$d товару</string>
 </resources>

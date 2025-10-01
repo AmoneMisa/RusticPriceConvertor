@@ -120,4 +120,5 @@
     <string name="item_n">Item %1$d</string>
     <string name="delete">Delete</string>
     <string name="compare_pair_line">%1$s is cheaper than %2$s by %3$s (%4$s%)</string>
+    <string name="compare_max_items">You can compare a maximum of %1$d items</string>
 </resources>

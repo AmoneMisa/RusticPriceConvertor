@@ -113,4 +113,5 @@
     <string name="item_n">Produs %1$d</string>
     <string name="delete">Șterge</string>
     <string name="compare_pair_line">%1$s este mai ieftin decât %2$s cu %3$s (%4$s%%)</string>
+    <string name="compare_max_items">Se pot compara maximum %1$d produse</string>
 </resources>
