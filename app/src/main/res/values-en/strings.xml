@@ -89,4 +89,35 @@
     <!-- Hints for “price amount” -->
     <string name="price_amount_hint_volume">how many ml/L the price is for</string>
     <string name="price_amount_hint_mass">how many g/kg the price is for</string>
+
+    <string name="tab_converter">Converter</string>
+    <string name="tab_compare">Compare</string>
+
+    <string name="compare_weighted">Compare prices of goods by weight</string>
+    <string name="add_more">Add more</string>
+    <string name="compare_price_hint">Price</string>
+    <string name="compare_amount_hint">Quantity</string>
+    <string name="remove">Remove</string>
+
+    <string name="compare_need_more">Add at least two items.</string>
+    <string name="compare_mixed_families">You cannot compare weight and volume at the same time. Select the same type of units.</string>
+
+    <string name="compare_item">Item %1$d</string>
+    <string name="compare_by_price">by price</string>
+    <string name="compare_by_kg">per 1 kg</string>
+    <string name="compare_by_l">per 1 l</string>
+    <string name="compare_amount_hint_example">for ex. 750</string>
+    <string name="compare_amount_hint_g">for ex. 750</string>
+    <string name="compare_amount_hint_kg">for ex. 2.55</string>
+    <string name="compare_amount_hint_ml">for ex. 970</string>
+    <string name="compare_amount_hint_l">for ex. 1.33</string>
+
+    <string name="compare_line_price">%1$d) %2$s — %3$s</string>
+    <string name="compare_line_weighted">%1$d) %2$s — %3$s</string>
+    <string name="compare_by_weight">Compare by weight/volume</string>
+    <string name="label_price_item_n">Price per item</string>
+    <string name="item_label_default">Item</string>
+    <string name="item_n">Item %1$d</string>
+    <string name="delete">Delete</string>
+    <string name="compare_pair_line">%1$s is cheaper than %2$s by %3$s (%4$s%)</string>
 </resources>

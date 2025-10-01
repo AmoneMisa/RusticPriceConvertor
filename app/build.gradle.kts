@@ -61,6 +61,8 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.androidx.lifecycle.runtime.ktx.v284)
     implementation(libs.logging.interceptor)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.viewpager2)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

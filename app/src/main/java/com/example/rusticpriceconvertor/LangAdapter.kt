@@ -30,16 +30,6 @@ class LangAdapter(
     }
 }
 
-object LanguageUtil {
-    fun applyLocale(base: Context, lang: String): Context {
-        val locale = Locale(lang)
-        Locale.setDefault(locale)
-        val cfg = base.resources.configuration
-        cfg.setLocale(locale)
-        return base.createConfigurationContext(cfg)
-    }
-}
-
 public fun detectDeviceLanguage(): String? = when (Locale.getDefault().language.lowercase()) {
     "ru" -> "ru"
     "uk" -> "uk"           // украинский

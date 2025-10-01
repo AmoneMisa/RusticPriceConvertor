@@ -81,4 +81,36 @@
 
     <string name="price_amount_hint_volume">câte ml/L sunt indicate în preț</string>
     <string name="price_amount_hint_mass">câte g/kg sunt indicate în preț</string>
+
+    <string name="tab_converter">Convertor</string>
+    <string name="tab_compare">Comparați</string>
+
+    <string name="compare_weighted">Comparație prețuri produse la greutate</string>
+    <string name="add_more">Adăugați mai multe</string>
+    <string name="compare_price_hint">Preț</string>
+    <string name="compare_amount_hint">Cantitate</string>
+    <string name="remove">Șterge</string>
+
+    <string name="compare_need_more">Adăugați cel puțin două produse.</string>
+    <string name="compare_mixed_families">Nu se pot compara simultan greutatea și volumul. Selectați același tip de unități.</string>
+
+    <string name="compare_item">Produs %1$d</string>
+    <string name="compare_by_price">după preț</string>
+    <string name="compare_by_kg">pe 1 kg</string>
+    <string name="compare_by_l">pe 1 l</string>
+    <string name="compare_amount_hint_example">de ex. 750</string>
+    <string name="compare_amount_hint_g">de ex. 750</string>
+    <string name="compare_amount_hint_kg">de ex. 2,55</string>
+    <string name="compare_amount_hint_ml">de ex. 970</string>
+    <string name="compare_amount_hint_l">de ex. 1,33</string>
+
+    <string name="compare_line_price">%1$d) %2$s — %3$s</string>
+    <string name="compare_line_weighted">%1$d) %2$s — %3$s</string>
+
+    <string name="compare_by_weight">Comparare după greutate/volum</string>
+    <string name="label_price_item_n">Prețul produsului</string>
+    <string name="item_label_default">Produs</string>
+    <string name="item_n">Produs %1$d</string>
+    <string name="delete">Șterge</string>
+    <string name="compare_pair_line">%1$s este mai ieftin decât %2$s cu %3$s (%4$s%%)</string>
 </resources>

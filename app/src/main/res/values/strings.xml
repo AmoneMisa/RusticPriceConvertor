@@ -97,4 +97,37 @@
 
     <string name="price_amount_hint_volume">сколько мл/л указано в цене</string>
     <string name="price_amount_hint_mass">сколько г/кг указано в цене</string>
+
+    <string name="tab_converter">Конвертер</string>
+    <string name="tab_compare">Сравнить</string>
+
+    <string name="compare_weighted">Сравнение цен товаров на развес</string>
+    <string name="add_more">Добавить ещё</string>
+    <string name="compare_price_hint">Цена</string>
+    <string name="compare_amount_hint">Кол-во</string>
+    <string name="remove">Удалить</string>
+
+    <string name="compare_need_more">Добавьте минимум два товара.</string>
+    <string name="compare_mixed_families">Нельзя сравнить вес и объём одновременно. Выберите одинаковый тип единиц.</string>
+
+    <string name="compare_item">Товар %1$d</string>
+    <string name="compare_by_price">по цене</string>
+    <string name="compare_by_kg">за 1 кг</string>
+    <string name="compare_by_l">за 1 л</string>
+    <string name="compare_amount_hint_example">Напр. 750</string>
+    <string name="compare_amount_hint_g">Напр. 750 </string>
+    <string name="compare_amount_hint_kg">Напр. 2.55</string>
+    <string name="compare_amount_hint_ml">Напр. 970</string>
+    <string name="compare_amount_hint_l">Напр. 1.33</string>
+
+    <string name="compare_line_price">%1$d) %2$s — %3$s</string>
+    <string name="compare_line_weighted">%1$d) %2$s — %3$s</string>
+
+    <string name="compare_by_weight">Сравнение по весу/объёму</string>
+    <string name="label_price_item_n">Цена за товар</string>
+    <string name="item_label_default">Товар</string>
+    <string name="item_n">Товар %1$d</string>
+    <string name="delete">Удалить</string>
+    <string name="compare_pair_line">%1$s дешевле, чем %2$s на %3$s (%4$s%%)</string>
+    <string name="compare_max_items">Можно сравнить максимум %1$d товара</string>
 </resources>
