@@ -59,28 +59,35 @@
     <!-- Поле Цена -->
     <LinearLayout
         android:id="@+id/priceLine"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginTop="4dp"
         android:maxWidth="420dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/labelPrice">
 
         <EditText
             android:id="@+id/priceInput"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:hint="@string/price_input"
             android:inputType="numberDecimal"
-            app:backgroundTint="@color/edittext_tint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/labelPrice" />
+            app:backgroundTint="@color/edittext_tint" />
+
+        <ImageButton
+            android:id="@+id/scanPriceButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/scan_price"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_camera"
+            android:tint="@color/fav_orange" />
     </LinearLayout>
 
     <!-- Количество + единица товара (шт / кг / г / л) -->

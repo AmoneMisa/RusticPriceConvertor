@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scanRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/btnFix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:text="@string/freeze"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnCancel" />
+    </androidx.camera.view.PreviewView>
+
+    <!-- Простая рамка области сканирования -->
+    <View
+        android:id="@+id/roiFrame"
+        android:layout_width="280dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
+        android:background="@drawable/roi_frame" />
+
+    <!-- Подсказка -->
+    <TextView
+        android:id="@+id/hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:padding="10dp"
+        android:text="@string/scan_hint"
+        android:textStyle="bold" />
+
+    <!-- Найденная цена (для фидбэка) -->
+    <TextView
+        android:id="@+id/foundText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="96dp"
+        android:padding="10dp"
+        android:text="—"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_close" />
+    </LinearLayout>
+</FrameLayout>

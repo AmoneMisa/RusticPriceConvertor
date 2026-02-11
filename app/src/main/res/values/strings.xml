@@ -130,4 +130,7 @@
     <string name="delete">Удалить</string>
     <string name="compare_pair_line">%1$s дешевле, чем %2$s на %3$s (%4$s%%)</string>
     <string name="compare_max_items">Можно сравнить максимум %1$d товара</string>
+    <string name="scan_hint">Наведи камеру на цену</string>
+    <string name="scan_price">Сканировать цену</string>
+    <string name="freeze">Зафиксировать</string>
 </resources>

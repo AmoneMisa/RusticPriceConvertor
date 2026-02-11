@@ -29,6 +29,7 @@ import java.util.Locale
 class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
     // --------- UI ----------
+    private lateinit var scanPriceButton: ImageButton
     private lateinit var priceInput: EditText
     private lateinit var quantityInput: EditText
     private lateinit var quantityTypeSpinner: Spinner
@@ -75,6 +76,31 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         super.onViewCreated(view, savedInstanceState)
 
         bindViews(view)
+        val hasCamera = requireContext().packageManager
+            .hasSystemFeature(android.content.pm.PackageManager.FEATURE_CAMERA_ANY)
+
+        scanPriceButton.visibility = if (hasCamera) View.VISIBLE else View.GONE
+        scanPriceButton.isEnabled = hasCamera
+
+        scanPriceButton.setOnClickListener {
+            ScanPriceDialogFragment().show(parentFragmentManager, "scan_price")
+        }
+
+        parentFragmentManager.setFragmentResultListener(
+            ScanPriceDialogFragment.REQ_KEY,
+            viewLifecycleOwner
+        ) { _, b ->
+            val value = b.getString(ScanPriceDialogFragment.RESULT_VALUE)
+                ?: return@setFragmentResultListener
+            val cur = b.getString(ScanPriceDialogFragment.RESULT_CURRENCY)
+
+            priceInput.setText(value)
+
+            if (!cur.isNullOrBlank() && allSymbols.contains(cur)) {
+                baseCurrencySpinner.setSelection(allSymbols.indexOf(cur))
+            }
+        }
+
         baseCurrencySpinner.isEnabled = false
         selectCurrenciesButton.isEnabled = false
 
@@ -88,6 +114,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         priceInput = v.findViewById(R.id.priceInput)
         quantityInput = v.findViewById(R.id.quantityInput)
         quantityTypeSpinner = v.findViewById(R.id.quantityTypeSpinner)
+        scanPriceButton = v.findViewById(R.id.scanPriceButton)
 
         baseCurrencySpinner = v.findViewById(R.id.baseCurrencySpinner)
         selectCurrenciesButton = v.findViewById(R.id.selectCurrenciesButton)
@@ -130,7 +157,11 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 allSymbols = fresh.keys.sorted()
                 inflateBaseSpinner(allSymbols)
             } else if (cached.isEmpty()) {
-                Toast.makeText(requireContext(), getString(R.string.err_load_currencies), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.err_load_currencies),
+                    Toast.LENGTH_LONG
+                ).show()
             }
             selectCurrenciesButton.setOnClickListener { openSecondaryCurrenciesDialog() }
         }
@@ -150,7 +181,8 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             when {
                 persisted != null && list.contains(persisted) -> persisted
                 detected != null && list.contains(detected) -> detected
-                else -> listOf("USD", "EUR", "UAH", "PLN").firstOrNull { list.contains(it) } ?: list.first()
+                else -> listOf("USD", "EUR", "UAH", "PLN").firstOrNull { list.contains(it) }
+                    ?: list.first()
             }
         baseCurrencySpinner.setSelection(list.indexOf(defaultBase))
 
@@ -166,6 +198,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 if (selectedSymbols.remove(baseNow)) setSecondarySelectedPersisted(selectedSymbols.toSet())
                 reloadRates()
             }
+
             override fun onNothingSelected(p0: AdapterView<*>) {}
         }
 
@@ -195,7 +228,11 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 rates = fresh
                 recalc()
             } else if (cached.isEmpty() && targets.isNotEmpty()) {
-                Toast.makeText(requireContext(), getString(R.string.err_fetch_rates, base), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.err_fetch_rates, base),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -208,10 +245,16 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         quantityTypeSpinner.adapter = adapter
 
         quantityTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 setupPriceUnitOptions()
                 recalc()
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
@@ -219,8 +262,8 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     private fun setupPriceUnitOptions() {
         val unitPiece = getString(R.string.unit_piece)
         val unitMl = getString(R.string.unit_ml)
-        val unitL  = getString(R.string.unit_l)
-        val unitG  = getString(R.string.unit_g)
+        val unitL = getString(R.string.unit_l)
+        val unitG = getString(R.string.unit_g)
         val unitKg = getString(R.string.unit_kg)
 
         val sellUnit = (quantityTypeSpinner.selectedItem ?: unitPiece).toString()
@@ -233,7 +276,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
         val opts = when (sellUnit) {
             unitL, unitMl -> resources.getStringArray(R.array.units_volume).toList()
-            else          -> resources.getStringArray(R.array.units_mass).toList()
+            else -> resources.getStringArray(R.array.units_mass).toList()
         }
 
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, opts)
@@ -258,14 +301,21 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         priceAmountInput.addTextChangedListener(watcher)
 
         priceUnitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) = recalc()
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) = recalc()
+
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
     // ========= Расчёты =========
     private fun recalc() {
-        val sellUnit = (quantityTypeSpinner.selectedItem ?: getString(R.string.unit_piece)).toString()
+        val sellUnit =
+            (quantityTypeSpinner.selectedItem ?: getString(R.string.unit_piece)).toString()
         val price = priceInput.text.toString().toDoubleOrNull() ?: 0.0
         val qty = quantityInput.text.toString().toDoubleOrNull() ?: 0.0
 
@@ -276,14 +326,14 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             pieceCountLabel.text = getString(R.string.piece_count, qty.toInt())
             pieceConvertedPerItem.text =
                 getString(R.string.converted_per_piece_title) + "\n" + formatConverted(price)
-            pieceConvertedTotal.text  =
+            pieceConvertedTotal.text =
                 getString(R.string.converted_total_title) + "\n" + formatConverted(total)
             return
         }
 
         showWeightMode()
 
-        val unitOfPrice   = (priceUnitSpinner.selectedItem ?: "").toString() // "мл"/"л" или "г"/"кг"
+        val unitOfPrice = (priceUnitSpinner.selectedItem ?: "").toString() // "мл"/"л" или "г"/"кг"
         val amountOfPrice = priceAmountInput.text.toString().toDoubleOrNull() ?: 0.0
         if (amountOfPrice <= 0.0) {
             // пустая/некорректная цена-за — просто показываем прочерки
@@ -299,11 +349,11 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         // ===== ОБЪЁМ =====
         if (sellUnit == getString(R.string.unit_l) || sellUnit == getString(R.string.unit_ml)) {
             val pkgMl = when (unitOfPrice) {
-                getString(R.string.unit_l)  -> amountOfPrice * 1000.0
+                getString(R.string.unit_l) -> amountOfPrice * 1000.0
                 else -> amountOfPrice // "мл"
             }
             val perMl = price / pkgMl
-            val perL  = perMl * 1000.0
+            val perL = perMl * 1000.0
             val per100ml = perMl * 100.0
 
             val qtyMl = if (sellUnit == getString(R.string.unit_l)) qty * 1000.0 else qty
@@ -312,7 +362,8 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             pricePerUnitLabel.text =
                 getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
                         String.format("%.2f %s", price, base())
-            takenAmountLabel.text = getString(R.string.taken_generic, getString(R.string.unit_ml), trimZeros(qtyMl))
+            takenAmountLabel.text =
+                getString(R.string.taken_generic, getString(R.string.unit_ml), trimZeros(qtyMl))
             costPerBaseUnitLabel.text =
                 getString(R.string.cost_per_l_and_100ml, perL, per100ml, base())
 
@@ -331,7 +382,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             else -> amountOfPrice // "г"
         }
         val perGram = price / pkgG
-        val perKg   = perGram * 1000.0
+        val perKg = perGram * 1000.0
         val per100g = perGram * 100.0
 
         val qtyGram = if (sellUnit == getString(R.string.unit_kg)) qty * 1000.0 else qty
@@ -340,7 +391,8 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         pricePerUnitLabel.text =
             getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
                     String.format("%.2f %s", price, base())
-        takenAmountLabel.text = getString(R.string.taken_generic, getString(R.string.unit_g), trimZeros(qtyGram))
+        takenAmountLabel.text =
+            getString(R.string.taken_generic, getString(R.string.unit_g), trimZeros(qtyGram))
         costPerBaseUnitLabel.text =
             getString(R.string.cost_per_kg_and_100g, perKg, per100g, base())
 
@@ -365,7 +417,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         modeWeight.visibility = View.VISIBLE
         val sellUnit = (quantityTypeSpinner.selectedItem ?: getString(R.string.unit_kg)).toString()
         quantityInput.hint = when (sellUnit) {
-            getString(R.string.unit_l)  -> getString(R.string.hint_qty_l)
+            getString(R.string.unit_l) -> getString(R.string.hint_qty_l)
             getString(R.string.unit_ml) -> getString(R.string.hint_qty_ml)
             getString(R.string.unit_kg) -> getString(R.string.hint_qty_kg)
             else -> getString(R.string.hint_qty_g)
@@ -471,7 +523,15 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         fun rebuild(q: String) {
             val filtered = filter.filter(q)
             val current = all.find { it.code == currentCode }
-            adapter.submitList(CurrencySectionBuilder.forBase(ctx = requireContext(), current, recents, all, filtered))
+            adapter.submitList(
+                CurrencySectionBuilder.forBase(
+                    ctx = requireContext(),
+                    current,
+                    recents,
+                    all,
+                    filtered
+                )
+            )
         }
 
         rebuild("")
@@ -508,6 +568,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
         fun buildSelectedRows(): List<Row.Currency> =
             selected.map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
+
         fun buildFavoriteRows(): List<Row.Currency> =
             getFavorites().map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
 
@@ -553,7 +614,11 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             .setPositiveButton(getString(R.string.btn_ok)) { d, _ ->
                 val list = selected.toList().filter { it != baseNow }.take(5)
                 if (list.isEmpty()) {
-                    Toast.makeText(requireContext(), getString(R.string.warn_need_at_least_one), Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.warn_need_at_least_one),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 } else {
                     selectedSymbols = list.toMutableList()
@@ -622,6 +687,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         gravity = Gravity.CENTER_HORIZONTAL
         setPadding(24, 24, 24, 16)
     }
+
     // Гео-дефолт базовой валюты (без разрешений)
     private fun detectDefaultCurrency(ctx: Context): String? = try {
         val tm = ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -629,5 +695,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             ?.uppercase(Locale.US)
         val locale = if (iso != null) Locale("", iso) else Locale.getDefault()
         java.util.Currency.getInstance(locale)?.currencyCode
-    } catch (_: Exception) { null }
+    } catch (_: Exception) {
+        null
+    }
 }
