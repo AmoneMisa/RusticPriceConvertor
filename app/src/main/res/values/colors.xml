@@ -11,7 +11,6 @@
     <color name="hint">#6E7A93</color>
     <color name="fav_orange">#FF8A1A</color>
     <color name="fav_orange_glow">#80FF8A1A</color>
-    <color name="black">#FF0E0F10</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#FF9AA3AD</color>
     <color name="grey_dark">#FF2A2D31</color>
@@ -25,4 +24,18 @@
     <color name="accent_glow_soft">#1AFF8C1A</color>
     <color name="input_bg">#FF121418</color>
     <color name="ripple">#1AFFFFFF</color>
+
+
+    <color name="bg0">#0B0C0F</color>
+    <color name="bg1">#111217</color>
+    <color name="card">#15161C</color>
+
+    <color name="accent">#FF9B2F</color>
+    <color name="accent_soft">#66FF9B2F</color>
+
+    <color name="text">#EDEEF2</color>
+    <color name="text_dim">#A8ABB4</color>
+    <color name="text_hint">#6E717B</color>
+
+    <color name="black">#000000</color>
 </resources>

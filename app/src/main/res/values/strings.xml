@@ -140,5 +140,17 @@
     <string name="need_scan_first">Нажми “Сканировать”</string>
     <string name="no_result_yet">Пока нет результата</string>
     <string name="close">Закрыть</string>
+    <string name="label_price">Цена</string>
+    <string name="hint_price">0</string>
+    <string name="label_qty">Количество</string>
+    <string name="label_price_unit">Цена за</string>
+    <string name="label_result">Итог</string>
+    <string name="btn_select_currencies">Выбрать валюты</string>
+    <string name="result_hint_piece">1-я цена — за %1$s, 2-я — за введённое количество.</string>
+    <string name="result_hint_volume">1-я цена — за %1$s, 2-я — за введённый объём.</string>
+    <string name="result_hint_weight">1-я цена — за %1$s, 2-я — за введённый вес.</string>
+    <string name="unit_1">%1$d %2$s</string>
+    <string name="unit_100">%1$d %2$s</string>
+
 
 </resources>

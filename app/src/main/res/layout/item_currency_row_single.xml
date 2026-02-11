@@ -66,8 +66,8 @@
                 android:layout_height="match_parent"
                 android:padding="8dp"
                 android:contentDescription="@string/currency_selected"
-                android:tint="@color/fav_orange"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:tint="@color/fav_orange" />
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

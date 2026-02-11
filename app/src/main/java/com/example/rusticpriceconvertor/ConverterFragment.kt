@@ -39,10 +39,13 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
     private lateinit var priceUnitRow: LinearLayout
     private lateinit var priceUnitSpinner: Spinner
-
     private lateinit var priceAmountInput: EditText
-
     private lateinit var labelPriceUnit: TextView
+
+    // Итог
+    private lateinit var resultList: LinearLayout
+    private lateinit var resultHint: TextView
+
     private var baseDialog: AlertDialog? = null
 
     // Штучно
@@ -125,19 +128,52 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         priceUnitRow = v.findViewById(R.id.priceUnitRow)
         priceUnitSpinner = v.findViewById(R.id.priceUnitSpinner)
 
-        modePiece = v.findViewById(R.id.modePiece)
-        piecePriceLabel = v.findViewById(R.id.piecePriceLabel)
-        pieceCountLabel = v.findViewById(R.id.pieceCountLabel)
-        pieceConvertedPerItem = v.findViewById(R.id.pieceConvertedPerItem)
-        pieceConvertedTotal = v.findViewById(R.id.pieceConvertedTotal)
+        resultList = v.findViewById(R.id.resultList)
+        resultHint = v.findViewById(R.id.resultHint)
+    }
 
-        modeWeight = v.findViewById(R.id.modeWeight)
-        pricePerUnitLabel = v.findViewById(R.id.pricePerUnitLabel)
-        takenAmountLabel = v.findViewById(R.id.takenAmountLabel)
-        costPerBaseUnitLabel = v.findViewById(R.id.costPerBaseUnitLabel)
-        convertedPerUnitLabel = v.findViewById(R.id.convertedPerUnitLabel)
-        convertedPerBaseUnitLabel = v.findViewById(R.id.convertedPerBaseUnitLabel)
-        convertedTotalLabel = v.findViewById(R.id.convertedTotalLabel)
+    private fun renderCompareTable(amountAInBase: Double, amountBInBase: Double) {
+        resultList.removeAllViews()
+
+        val base = base()
+        val rows = selectedSymbols
+            .filter { it != base }
+            .mapNotNull { code ->
+                val rate = rates[code] ?: return@mapNotNull null
+                // A = "за введённое", B = "за 100г/100мл/1шт"
+                Triple(code, formatMoney(amountAInBase * rate), formatMoney(amountBInBase * rate))
+            }
+
+        val layoutId = R.layout.item_result_row_2cols
+
+        if (rows.isEmpty()) {
+            val row = layoutInflater.inflate(layoutId, resultList, false)
+            row.findViewById<TextView>(R.id.code).text = getString(R.string.dash)
+            row.findViewById<TextView>(R.id.perUnit).text = getString(R.string.dash)
+            row.findViewById<TextView>(R.id.total).text = getString(R.string.dash)
+            resultList.addView(row)
+            return
+        }
+
+        rows.forEachIndexed { i, (code, a, b) ->
+            val row = layoutInflater.inflate(layoutId, resultList, false)
+            row.findViewById<TextView>(R.id.code).text = code
+            row.findViewById<TextView>(R.id.perUnit).text = a
+            row.findViewById<TextView>(R.id.total).text = b
+            resultList.addView(row)
+
+            if (i != rows.lastIndex) {
+                val div = View(requireContext()).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        (resources.displayMetrics.density).toInt().coerceAtLeast(1) // ~1dp
+                    )
+                    background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.divider_result)
+                }
+                resultList.addView(div)
+            }
+        }
     }
 
     // ========= Валюты: загрузка + привязка =========
@@ -314,94 +350,84 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
     // ========= Расчёты =========
     private fun recalc() {
-        val sellUnit =
-            (quantityTypeSpinner.selectedItem ?: getString(R.string.unit_piece)).toString()
+        val unitPiece = getString(R.string.unit_piece)
+        val unitMl = getString(R.string.unit_ml)
+        val unitL = getString(R.string.unit_l)
+        val unitG = getString(R.string.unit_g)
+        val unitKg = getString(R.string.unit_kg)
+
+        val sellUnit = (quantityTypeSpinner.selectedItem ?: unitPiece).toString()
         val price = priceInput.text.toString().toDoubleOrNull() ?: 0.0
         val qty = quantityInput.text.toString().toDoubleOrNull() ?: 0.0
 
-        if (sellUnit == getString(R.string.unit_piece)) {
-            showPieceMode()
+        // --- Штучно ---
+        if (sellUnit == unitPiece) {
+            priceUnitRow.visibility = View.GONE
+            quantityInput.hint = getString(R.string.hint_qty_pieces)
+
             val total = price * qty
-            piecePriceLabel.text = getString(R.string.piece_price, price, base())
-            pieceCountLabel.text = getString(R.string.piece_count, qty.toInt())
-            pieceConvertedPerItem.text =
-                getString(R.string.converted_per_piece_title) + "\n" + formatConverted(price)
-            pieceConvertedTotal.text =
-                getString(R.string.converted_total_title) + "\n" + formatConverted(total)
+
+            // A = за введённое количество, B = за 1 шт
+            renderCompareTable(amountAInBase = total, amountBInBase = price)
+
+            val onePiece = getString(R.string.unit_1, 1, unitPiece)
+            resultHint.text = getString(R.string.result_hint_piece, onePiece)
             return
         }
 
-        showWeightMode()
+        // --- Вес / Объём ---
+        priceUnitRow.visibility = View.VISIBLE
+        quantityInput.hint = when (sellUnit) {
+            unitL -> getString(R.string.hint_qty_l)
+            unitMl -> getString(R.string.hint_qty_ml)
+            unitKg -> getString(R.string.hint_qty_kg)
+            else -> getString(R.string.hint_qty_g)
+        }
 
-        val unitOfPrice = (priceUnitSpinner.selectedItem ?: "").toString() // "мл"/"л" или "г"/"кг"
+        val unitOfPrice = (priceUnitSpinner.selectedItem ?: "").toString()
         val amountOfPrice = priceAmountInput.text.toString().toDoubleOrNull() ?: 0.0
         if (amountOfPrice <= 0.0) {
-            // пустая/некорректная цена-за — просто показываем прочерки
-            pricePerUnitLabel.text = getString(R.string.dash_price)
-            takenAmountLabel.text = getString(R.string.dash)
-            costPerBaseUnitLabel.text = getString(R.string.dash)
-            convertedPerUnitLabel.text = getString(R.string.dash)
-            convertedPerBaseUnitLabel.text = getString(R.string.dash)
-            convertedTotalLabel.text = getString(R.string.dash)
+            renderCompareTable(0.0, 0.0)
+            resultHint.text = getString(R.string.dash)
             return
         }
 
         // ===== ОБЪЁМ =====
-        if (sellUnit == getString(R.string.unit_l) || sellUnit == getString(R.string.unit_ml)) {
+        if (sellUnit == unitL || sellUnit == unitMl) {
             val pkgMl = when (unitOfPrice) {
-                getString(R.string.unit_l) -> amountOfPrice * 1000.0
-                else -> amountOfPrice // "мл"
+                unitL -> amountOfPrice * 1000.0
+                else -> amountOfPrice // мл
             }
             val perMl = price / pkgMl
-            val perL = perMl * 1000.0
             val per100ml = perMl * 100.0
 
-            val qtyMl = if (sellUnit == getString(R.string.unit_l)) qty * 1000.0 else qty
+            val qtyMl = if (sellUnit == unitL) qty * 1000.0 else qty
             val total = perMl * qtyMl
 
-            pricePerUnitLabel.text =
-                getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
-                        String.format("%.2f %s", price, base())
-            takenAmountLabel.text =
-                getString(R.string.taken_generic, getString(R.string.unit_ml), trimZeros(qtyMl))
-            costPerBaseUnitLabel.text =
-                getString(R.string.cost_per_l_and_100ml, perL, per100ml, base())
+            // A = за введённый объём, B = за 100 мл
+            renderCompareTable(amountAInBase = total, amountBInBase = per100ml)
 
-            convertedPerUnitLabel.text =
-                getString(R.string.converted_per_l_title) + "\n" + formatConverted(perL)
-            convertedPerBaseUnitLabel.text =
-                getString(R.string.converted_per_100ml_title) + "\n" + formatConverted(per100ml)
-            convertedTotalLabel.text =
-                getString(R.string.converted_total_weight_title) + "\n" + formatConverted(total)
+            val hundredMl = getString(R.string.unit_100, 100, unitMl)
+            resultHint.text = getString(R.string.result_hint_volume, hundredMl)
             return
         }
 
-        // ===== ВЕС ===== (sellUnit == "кг" или "г")
+        // ===== ВЕС =====
         val pkgG = when (unitOfPrice) {
-            getString(R.string.unit_kg) -> amountOfPrice * 1000.0
-            else -> amountOfPrice // "г"
+            unitKg -> amountOfPrice * 1000.0
+            else -> amountOfPrice // г
         }
         val perGram = price / pkgG
-        val perKg = perGram * 1000.0
         val per100g = perGram * 100.0
 
-        val qtyGram = if (sellUnit == getString(R.string.unit_kg)) qty * 1000.0 else qty
+        val qtyGram = if (sellUnit == unitKg) qty * 1000.0 else qty
         val total = perGram * qtyGram
 
-        pricePerUnitLabel.text =
-            getString(R.string.price_for) + " ${trimZeros(amountOfPrice)} $unitOfPrice: " +
-                    String.format("%.2f %s", price, base())
-        takenAmountLabel.text =
-            getString(R.string.taken_generic, getString(R.string.unit_g), trimZeros(qtyGram))
-        costPerBaseUnitLabel.text =
-            getString(R.string.cost_per_kg_and_100g, perKg, per100g, base())
+        // A = за введённый вес, B = за 100 г
+        renderCompareTable(amountAInBase = total, amountBInBase = per100g)
 
-        convertedPerUnitLabel.text =
-            getString(R.string.converted_per_kg_title) + "\n" + formatConverted(perKg)
-        convertedPerBaseUnitLabel.text =
-            getString(R.string.converted_per_100g_title) + "\n" + formatConverted(per100g)
-        convertedTotalLabel.text =
-            getString(R.string.converted_total_weight_title) + "\n" + formatConverted(total)
+        val hundredG = getString(R.string.unit_100, 100, unitG)
+        resultHint.text = getString(R.string.result_hint_weight, hundredG)
     }
 
     private fun showPieceMode() {
