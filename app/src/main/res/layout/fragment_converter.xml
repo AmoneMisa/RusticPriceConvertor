@@ -1,283 +1,368 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/currencyLine"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp">
 
-        <Spinner
-            android:id="@+id/baseCurrencySpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            app:layout_constraintEnd_toStartOf="@+id/selectCurrenciesButton"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_conversion_absoluteHeight="40dp"
-            tools:layout_conversion_absoluteWidth="130dp"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="37dp" />
-
-        <Button
-            android:id="@+id/selectCurrenciesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:backgroundTint="@color/fav_orange"
-            android:text="@string/choose_currencies"
+        <FrameLayout
+            android:id="@+id/currencyGlow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glow_orange"
+            android:padding="2dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.733"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="50dp"
-            tools:layout_conversion_absoluteWidth="169dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/currencyCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_glass"
+                    android:padding="12dp">
+
+                    <Spinner
+                        android:id="@+id/baseCurrencySpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/selectCurrenciesButton"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/selectCurrenciesButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:backgroundTint="@color/fav_orange"
+                        android:text="@string/choose_currencies"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </FrameLayout>
+        <!-- ===== Цена ===== -->
+        <TextView
+            android:id="@+id/labelPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/price_input"
+            android:textColor="@color/fav_orange"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/currencyGlow" />
+
+        <FrameLayout
+            android:id="@+id/priceGlow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_glow_orange"
+            android:padding="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelPrice">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/stroke"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <EditText
+                        android:id="@+id/priceInput"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/price_input"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/hint"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/scanPriceButton"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/scanPriceButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/scan_price"
+                        android:padding="10dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/fav_orange" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
+
+        <!-- ===== Количество ===== -->
+        <TextView
+            android:id="@+id/labelQty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/quantity_input"
+            android:textColor="@color/fav_orange"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/priceGlow" />
+
+        <FrameLayout
+            android:id="@+id/qtyGlow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_glow_orange"
+            android:padding="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelQty">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/qtyCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/stroke"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+
+                    <EditText
+                        android:id="@+id/quantityInput"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/quantity_input"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/hint"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/quantityTypeSpinner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/quantityTypeSpinner"
+                        android:layout_width="90dp"
+                        android:layout_height="44dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </FrameLayout>
+
+        <!-- Для вес/объём: 'цена указана за …' -->
+        <LinearLayout
+            android:id="@+id/priceUnitRow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/qtyGlow">
+
+            <TextView
+                android:id="@+id/labelPriceUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/price_for_label"
+                android:textColor="@color/text_secondary" />
+
+            <EditText
+                android:id="@+id/priceAmountInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="@string/count"
+                android:inputType="numberDecimal"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/hint" />
+
+            <Spinner
+                android:id="@+id/priceUnitSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp" />
+        </LinearLayout>
+
+        <!-- ===== Результаты / режимы ===== -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/resultsCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/surface_2"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/priceUnitRow"
+            app:strokeColor="@color/stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <!-- ===== ШТУЧНО ===== -->
+                <LinearLayout
+                    android:id="@+id/modePiece"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/piecePriceLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/piece_price"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/pieceCountLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/piece_count"
+                        android:textColor="@color/text_secondary" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp" />
+
+                    <TextView
+                        android:id="@+id/pieceConvertedPerItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/converted_per_piece_title"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/pieceConvertedTotal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/converted_total_title"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+
+                <!-- ===== ВЕС/ОБЪЁМ ===== -->
+                <LinearLayout
+                    android:id="@+id/modeWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/pricePerUnitLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/price_for"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/takenAmountLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/price_for"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/costPerBaseUnitLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/price_per_any_format"
+                        android:textColor="@color/text_secondary" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="12dp" />
+
+                    <TextView
+                        android:id="@+id/convertedPerUnitLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/taken_generic"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/convertedPerBaseUnitLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/cost_per_kg_and_100g"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/convertedTotalLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/cost_per_l_and_100ml"
+                        android:textColor="@color/text_primary" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/labelPrice"
-        android:layout_width="160dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/fav_orange"
-        android:textSize="12sp"
-        android:text="@string/price_input"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/currencyLine"
-        />
-
-    <!-- Поле Цена -->
-    <LinearLayout
-        android:id="@+id/priceLine"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
-        android:maxWidth="420dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelPrice">
-
-        <EditText
-            android:id="@+id/priceInput"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:hint="@string/price_input"
-            android:inputType="numberDecimal"
-            app:backgroundTint="@color/edittext_tint" />
-
-        <ImageButton
-            android:id="@+id/scanPriceButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/scan_price"
-            android:padding="8dp"
-            android:src="@android:drawable/ic_menu_camera"
-            android:tint="@color/fav_orange" />
-    </LinearLayout>
-
-    <!-- Количество + единица товара (шт / кг / г / л) -->
-
-    <TextView
-        android:id="@+id/labelQty"
-        android:layout_width="160dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/fav_orange"
-        android:textSize="12sp"
-        android:text="@string/quantity_input"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/priceLine" />
-
-    <!-- Для вес/объём: строка 'цена указана за …' -->
-    <LinearLayout
-        android:id="@+id/qtyRow"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:maxWidth="420dp"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/labelQty">
-        <EditText
-            android:id="@+id/quantityInput"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            app:backgroundTint="@color/edittext_tint"
-            android:hint="@string/quantity_input"
-            android:inputType="numberDecimal" />
-
-        <Spinner
-            android:id="@+id/quantityTypeSpinner"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="0dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/priceUnitRow"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/qtyRow">
-
-        <TextView
-            android:id="@+id/labelPriceUnit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/price_for_label" />
-
-        <!-- сколько этих единиц соответствует цене -->
-        <EditText
-            android:id="@+id/priceAmountInput"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            app:backgroundTint="@color/edittext_tint"
-            android:hint="@string/count"
-            android:inputType="numberDecimal" />
-
-        <Spinner
-            android:id="@+id/priceUnitSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp" />
-    </LinearLayout>
-
-    <!-- ===== РЕЖИМ: ШТУЧНО ===== -->
-    <LinearLayout
-        android:id="@+id/modePiece"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/priceUnitRow">
-
-        <TextView
-            android:id="@+id/piecePriceLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/piece_price" />
-
-        <TextView
-            android:id="@+id/pieceCountLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/piece_count" />
-
-        <TextView
-            android:id="@+id/pieceConvertedPerItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/converted_per_piece_title" />
-
-        <TextView
-            android:id="@+id/pieceConvertedTotal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/converted_total_title" />
-    </LinearLayout>
-
-    <!-- ===== РЕЖИМ: ВЕС/ОБЪЁМ ===== -->
-    <LinearLayout
-        android:id="@+id/modeWeight"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/priceUnitRow">
-
-        <TextView
-            android:id="@+id/pricePerUnitLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/price_for" />
-
-        <TextView
-            android:id="@+id/takenAmountLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/price_for" />
-
-        <TextView
-            android:id="@+id/costPerBaseUnitLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/price_per_any_format" />
-
-        <TextView
-            android:id="@+id/convertedPerUnitLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/taken_generic" />
-
-        <TextView
-            android:id="@+id/convertedPerBaseUnitLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/cost_per_kg_and_100g" />
-
-        <TextView
-            android:id="@+id/convertedTotalLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/cost_per_l_and_100ml" />
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

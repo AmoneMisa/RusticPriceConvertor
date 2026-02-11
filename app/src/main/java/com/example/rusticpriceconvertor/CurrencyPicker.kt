@@ -131,7 +131,7 @@ private class DividerVH(view: View) : RecyclerView.ViewHolder(view)
 private class CurrencyVH(view: View) : RecyclerView.ViewHolder(view) {
     val code: TextView = view.findViewById(R.id.code)
     val name: TextView = view.findViewById(R.id.name)
-    val heart: ImageView = view.findViewById(R.id.favoriteIcon)
+    val heart: ImageView = view.findViewById(R.id.fav)
 }
 
 // ---------- Адаптер ----------

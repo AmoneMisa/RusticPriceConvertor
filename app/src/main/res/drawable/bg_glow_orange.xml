@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Сильное рассеянное свечение (широкое) -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="18dp"/>
+            <gradient
+                android:type="radial"
+                android:gradientRadius="360dp"
+                android:centerX="0.28"
+                android:centerY="0.18"
+                android:startColor="#B0FF8A1A"
+                android:endColor="#00000000"/>
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="18dp"/>
+            <gradient
+                android:type="radial"
+                android:gradientRadius="520dp"
+                android:centerX="0.22"
+                android:centerY="0.10"
+                android:startColor="#55FF8A1A"
+                android:endColor="#00000000"/>
+        </shape>
+    </item>
+
+</layer-list>

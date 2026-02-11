@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.RusticPriceConvertor" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/fav_orange</item>
+        <item name="colorSecondary">@color/fav_orange_light</item>
+        <item name="colorAccent">@color/fav_orange</item>
+
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+<!--        <item name="colorBackground">@color/bg</item>-->
+        <item name="colorOnBackground">@color/text_primary</item>
+
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/hint</item>
+
+        <item name="colorControlHighlight">@color/ripple</item>
+        <item name="colorError">@color/error</item>
+
+        <item name="materialButtonStyle">@style/Widget.RPC.Button</item>
+        <item name="textInputStyle">@style/Widget.RPC.TextInputLayout</item>
+        <item name="android:editTextStyle">@style/Widget.RPC.EditText</item>
+        <item name="tabStyle">@style/Widget.RPC.TabLayout</item>
+    </style>
+</resources>

@@ -3,59 +3,98 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg"
     android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/logoLine"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="64dp"
-        android:layout_marginTop="24dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/appLogo"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:contentDescription="@string/app_name"
-            android:src="@mipmap/ic_launcher_round"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:src="@mipmap/ic_launcher_round" />
+
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
-        <Spinner
-            android:id="@+id/langSpinner"
-            android:layout_width="130dp"
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/langCard"
+            android:layout_width="140dp"
             android:layout_height="40dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:cardBackgroundColor="@android:color/transparent"
+            app:strokeWidth="0dp"
+            android:background="@drawable/bg_glow_orange"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="14dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="12dp"
+                android:paddingEnd="10dp">
+
+                <Spinner
+                    android:id="@+id/langSpinner"
+                    style="@style/Widget.RPC.SpinnerNoBg"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/langChevron"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/langChevron"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_chevron_down"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/text_muted" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Верхняя панель -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
-        android:layout_marginTop="30dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="18dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tabTextColor="@color/fav_orange"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logoLine"
+
+        app:tabBackground="@android:color/transparent"
         app:tabIndicatorColor="@color/fav_orange"
-        app:layout_constraintTop_toBottomOf="@id/logoLine"/>
+        app:tabIndicatorFullWidth="false"
+
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabRippleColor="@color/ripple"
+        app:tabSelectedTextColor="@color/fav_orange"
+        app:tabTextColor="@color/text_muted" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:tabTextColor="@color/fav_orange"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

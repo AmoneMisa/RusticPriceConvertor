@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.RPC.Spinner" parent="Widget.AppCompat.Spinner.Underlined">
+        <item name="android:background">@drawable/bg_spinner</item>
+        <item name="android:popupBackground">@color/surface_3</item>
+        <item name="android:dropDownVerticalOffset">8dp</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+
+    <style name="Widget.RPC.SpinnerNoBg" parent="Widget.AppCompat.Spinner.Underlined">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:popupBackground">@color/surface_3</item>
+        <item name="android:dropDownVerticalOffset">8dp</item>
+        <item name="android:spinnerMode">dropdown</item>
+    </style>
+
+</resources>

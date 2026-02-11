@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- прозрачный слой, чтобы контент был с паддингом -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+
+    <!-- стрелка справа -->
+    <item android:gravity="end|center_vertical">
+        <inset
+            android:insetRight="10dp">
+            <shape android:shape="rectangle">
+                <size android:width="14dp" android:height="14dp" />
+                <solid android:color="@android:color/transparent" />
+            </shape>
+        </inset>
+    </item>
+
+</layer-list>

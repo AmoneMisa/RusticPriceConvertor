@@ -1,4 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.RusticPriceConvertor" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+
+    <style name="Theme.RusticPriceConvertor" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Основные цвета -->
+        <item name="colorPrimary">@color/fav_orange</item>
+        <item name="colorPrimaryVariant">@color/fav_orange</item>
+        <item name="colorSecondary">@color/fav_orange_light</item>
+        <item name="colorAccent">@color/fav_orange</item>
+
+        <!-- Фон приложения -->
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+<!--        <item name="colorBackground">@color/bg</item>-->
+        <item name="colorOnBackground">@color/text_primary</item>
+
+        <!-- Текст -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/hint</item>
+
+        <!-- Ripple -->
+        <item name="colorControlHighlight">@color/ripple</item>
+
+        <!-- Состояния -->
+        <item name="colorError">@color/error</item>
+
+        <!-- Стили по умолчанию -->
+        <item name="materialButtonStyle">@style/Widget.RPC.Button</item>
+        <item name="textInputStyle">@style/Widget.RPC.TextInputLayout</item>
+        <item name="android:editTextStyle">@style/Widget.RPC.EditText</item>
+        <item name="tabStyle">@style/Widget.RPC.TabLayout</item>
+    </style>
+
+    <!-- Кнопка в вашем стиле -->
+    <style name="Widget.RPC.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:backgroundTint">@color/fav_orange</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="rippleColor">@color/ripple</item>
+    </style>
+
+    <!-- TextInputLayout (если решишь перейти на него позже) -->
+    <style name="Widget.RPC.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+        <item name="boxBackgroundColor">@color/input_bg</item>
+        <item name="boxStrokeColor">@color/stroke</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="hintTextColor">@color/hint</item>
+    </style>
+
+    <!-- EditText базовый (для тех, что без TextInputLayout) -->
+    <style name="Widget.RPC.EditText" parent="Widget.MaterialComponents.TextInputEditText.FilledBox.Dense">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/hint</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <!-- TabLayout в стиле “тонкая линия + оранжевый акцент” -->
+    <style name="Widget.RPC.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabIndicatorColor">@color/fav_orange</item>
+        <item name="tabTextColor">@color/text_muted</item>
+        <item name="tabSelectedTextColor">@color/fav_orange</item>
+        <item name="tabRippleColor">@color/ripple</item>
+        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabIndicatorHeight">2dp</item>
+    </style>
+
 </resources>

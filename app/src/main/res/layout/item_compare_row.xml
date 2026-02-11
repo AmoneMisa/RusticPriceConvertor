@@ -1,56 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="8dp">
-    <TextView
-        android:id="@+id/tvLabel"
+    android:layout_marginTop="10dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:strokeWidth="0dp"
+    android:background="@drawable/bg_glow_orange"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="13sp"
-        android:paddingBottom="4dp"
-        android:text="@string/item_label_default"/>
+        android:padding="12dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <EditText
-            android:id="@+id/etPrice"
+        <TextView
+            android:id="@+id/tvLabel"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:hint="@string/price_input"
-            android:inputType="numberDecimal"
-            app:backgroundTint="@color/edittext_tint"
-            android:paddingHorizontal="8dp"/>
+            android:layout_height="wrap_content"
+            android:text="@string/item_label_default"
+            android:textColor="@color/text_secondary"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <EditText
-            android:id="@+id/etAmount"
+        <!-- Поле Цена (внутренний “инпут-контейнер”) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/priceFieldCard"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:hint="@string/compare_amount_hint_g"
-            android:inputType="numberDecimal"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/surface_2"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke"
+            app:strokeWidth="1dp"
+            app:layout_constraintTop_toBottomOf="@id/tvLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/amountFieldCard"
+            app:layout_constraintWidth_percent="0.46">
+
+            <EditText
+                android:id="@+id/etPrice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:hint="@string/price_input"
+                android:inputType="numberDecimal"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/hint"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:singleLine="true" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Поле Количество (показывается только в режиме веса/объёма) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/amountFieldCard"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             android:visibility="gone"
-            app:backgroundTint="@color/edittext_tint"
-            android:paddingHorizontal="8dp"/>
+            app:cardBackgroundColor="@color/surface_2"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke"
+            app:strokeWidth="1dp"
+            app:layout_constraintTop_toBottomOf="@id/tvLabel"
+            app:layout_constraintStart_toEndOf="@id/priceFieldCard"
+            app:layout_constraintEnd_toStartOf="@id/btnRemove"
+            app:layout_constraintWidth_percent="0.40">
 
-        <ImageButton
-            android:id="@+id/btnRemove"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/delete"
-            app:srcCompat="@drawable/ic_delete_24"
-            android:scaleType="center"
-            android:adjustViewBounds="true"/>
-    </LinearLayout>
-</LinearLayout>
+            <EditText
+                android:id="@+id/etAmount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:hint="@string/compare_amount_hint_g"
+                android:inputType="numberDecimal"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/hint"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:singleLine="true" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Кнопка удаления -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/removeBtnCard"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/surface_3"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/stroke"
+            app:strokeWidth="1dp"
+            app:layout_constraintTop_toBottomOf="@id/tvLabel"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnRemove"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/delete"
+                android:padding="10dp"
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_delete_24"
+                app:tint="@color/text_muted" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
