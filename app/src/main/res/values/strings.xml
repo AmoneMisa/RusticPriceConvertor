@@ -133,4 +133,12 @@
     <string name="scan_hint">Наведи камеру на цену</string>
     <string name="scan_price">Сканировать цену</string>
     <string name="freeze">Зафиксировать</string>
+    <string name="fast_mode">Быстрый режим</string>
+    <string name="big_price_tag">Большой ценник</string>
+    <string name="scan">Сканировать</string>
+    <string name="fix">Зафиксировать</string>
+    <string name="need_scan_first">Нажми “Сканировать”</string>
+    <string name="no_result_yet">Пока нет результата</string>
+    <string name="close">Закрыть</string>
+
 </resources>

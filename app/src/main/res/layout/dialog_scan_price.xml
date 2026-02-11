@@ -1,69 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scanRoot"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:implementationMode="performance"
+        app:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:id="@+id/btnFix"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="50dp"
-            android:text="@string/freeze"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnCancel" />
-    </androidx.camera.view.PreviewView>
-
-    <!-- Простая рамка области сканирования -->
-    <View
-        android:id="@+id/roiFrame"
-        android:layout_width="280dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center"
-        android:background="@drawable/roi_frame" />
-
-    <!-- Подсказка -->
     <TextView
-        android:id="@+id/hint"
-        android:layout_width="wrap_content"
+        android:id="@+id/titleHint"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/transparent"
-        android:padding="10dp"
-        android:text="@string/scan_hint"
-        android:textStyle="bold" />
-
-    <!-- Найденная цена (для фидбэка) -->
-    <TextView
-        android:id="@+id/foundText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="96dp"
-        android:padding="10dp"
-        android:text="—"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_marginTop="18dp"
+        android:gravity="center"
+        android:text="Наведи камеру на цену"
+        android:textColor="@color/grey"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/topTogglesRow"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="end"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/titleHint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchFastMode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/fast_mode"
+            android:textColor="@color/white"
+            app:useMaterialThemeColors="false"
+            app:thumbTint="@color/fav_orange_light"
+            app:trackTint="@color/grey_dark"
+            app:trackTintMode="src_in" />
+
+        <View
+            android:layout_width="14dp"
+            android:layout_height="1dp" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/switchBigTag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/big_price_tag"
+            android:textColor="@color/white"
+            app:useMaterialThemeColors="false"
+            app:thumbTint="@color/fav_orange_light"
+            app:trackTint="@color/grey_dark"
+            app:trackTintMode="src_in" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/roiFrame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/roi_frame"
+        app:layout_constraintWidth_percent="0.78"
+        app:layout_constraintHeight_percent="0.16"
+        app:layout_constraintTop_toBottomOf="@id/topTogglesRow"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/foundText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="17,76 RON"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFix"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:text="@string/scan"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            app:cornerRadius="14dp"
+            app:backgroundTint="@color/fav_orange"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintWidth_percent="0.62" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_close" />
-    </LinearLayout>
-</FrameLayout>
+            android:layout_height="44dp"
+            android:text="@string/close"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:cornerRadius="14dp"
+            app:backgroundTint="@color/grey_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/greenDot"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_margin="12dp"
+        android:background="@drawable/scan_dot_green"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
