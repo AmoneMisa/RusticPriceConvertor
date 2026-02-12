@@ -12,8 +12,9 @@
         android:id="@+id/previewView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:implementationMode="performance"
-        app:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        app:implementationMode="compatible"
+        app:scaleType="fillCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,6 +27,8 @@
         android:layout_height="0dp"
         android:background="@drawable/bg_camera_overlay"
         app:layout_constraintTop_toTopOf="parent"
+        android:clickable="false"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -139,6 +142,7 @@
         app:cardElevation="0dp"
         app:strokeColor="@color/stroke"
         app:strokeWidth="1dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

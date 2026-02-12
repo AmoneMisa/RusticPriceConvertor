@@ -89,20 +89,48 @@ class ScanPriceDialogFragment : DialogFragment() {
         previewView = view.findViewById(R.id.previewView)
         roiFrame = view.findViewById(R.id.roiFrame)
         foundText = view.findViewById(R.id.foundText)
-
-        val btnFix = view.findViewById<Button>(R.id.btnFix)
+        btnFix = view.findViewById(R.id.btnFix)
         val btnCancel = view.findViewById<Button>(R.id.btnCancel)
-        val switchFastMode =
-            view.findViewById<MaterialSwitch>(R.id.switchFastMode)
+        switchFast = view.findViewById(R.id.switchFastMode)
+        switchBig = view.findViewById(R.id.switchBigTag)
 
-        btnCancel.setOnClickListener { dismiss() }
-        btnFix.visibility =
-            if (switchFastMode.isChecked) View.GONE else View.VISIBLE
+        view.findViewById<View>(R.id.foundPill).visibility = View.GONE
+        foundText.text = ""
 
-        switchFastMode.setOnCheckedChangeListener { _, isChecked ->
+        btnCancel.setOnClickListener { dismissAllowingStateLoss() }
+
+        btnFix.setOnClickListener {
+            isScanning = true
+            resetStability()
+        }
+
+        btnFix.visibility = if (switchFast.isChecked) View.GONE else View.VISIBLE
+        switchFast.setOnCheckedChangeListener { _, isChecked ->
             btnFix.visibility = if (isChecked) View.GONE else View.VISIBLE
+            isScanning = isChecked
+            resetStability()
+        }
+
+        switchBig.setOnCheckedChangeListener { _, _ ->
+            resetStability()
+        }
+
+        ensureCameraAndStart()
+    }
+
+    private fun ensureCameraAndStart() {
+        val granted = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (granted) {
+            previewView.post { startCamera() }
+        } else {
+            requestCameraPermission.launch(Manifest.permission.CAMERA)
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -179,6 +207,8 @@ class ScanPriceDialogFragment : DialogFragment() {
                 }
 
                 runOnUi {
+                    val pill = view?.findViewById<View>(R.id.foundPill)
+                    pill?.visibility = View.VISIBLE
                     foundText.text =
                         if (parsed.currency != null) "$amountNorm ${parsed.currency}" else amountNorm
                 }
@@ -197,7 +227,10 @@ class ScanPriceDialogFragment : DialogFragment() {
         stableHits = 0
         bestValue = null
         bestCurrency = null
-        runOnUi { foundText.text = "" }
+        runOnUi {
+            view?.findViewById<View>(R.id.foundPill)?.visibility = View.GONE
+            foundText.text = ""
+        }
     }
 
     private fun mapRoiToImage(imageProxy: ImageProxy): Rect? {
