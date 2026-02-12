@@ -2,7 +2,6 @@
 agp = "8.13.2"
 coil = "2.7.0"
 gson = "2.13.2"
-icu4j = "78.2"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -10,8 +9,8 @@ junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 kotlinxCoroutinesAndroidVersion = "1.10.2"
 kotlinxCoroutinesCoreVersion = "1.10.2"
-activityCompose = "1.12.3"
-composeBom = "2026.01.01"
+activityCompose = "1.12.4"
+composeBom = "2026.02.00"
 constraintlayout = "2.2.1"
 appcompat = "1.7.1"
 lifecycleRuntimeKtxVersion = "2.10.0"
@@ -33,7 +32,6 @@ androidx-lifecycle-runtime-ktx-v284 = { module = "androidx.lifecycle:lifecycle-r
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2Version" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

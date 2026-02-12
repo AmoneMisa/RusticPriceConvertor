@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.graphics.RectF
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
@@ -22,6 +23,8 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.camera.view.TransformExperimental
+import androidx.camera.view.transform.CoordinateTransform
+import androidx.camera.view.transform.ImageProxyTransformFactory
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.materialswitch.MaterialSwitch
@@ -43,11 +46,13 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private lateinit var previewView: PreviewView
-    private lateinit var roiFrame: View
     private lateinit var foundText: TextView
     private lateinit var btnFix: Button
     private lateinit var switchFast: MaterialSwitch
     private lateinit var switchBig: MaterialSwitch
+    private lateinit var roiFrame: RoiOverlayView
+    private var previewUseCase: Preview? = null
+    private var analysisUseCase: ImageAnalysis? = null
 
     private val cameraExecutor = Executors.newSingleThreadExecutor()
     private val recognizer by lazy { TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS) }
@@ -55,7 +60,6 @@ class ScanPriceDialogFragment : DialogFragment() {
     private var lastAnalyzeAt = 0L
     private var lastKey: String? = null
     private var stableHits = 0
-
     private var isScanning = false
     private var bestValue: String? = null
     private var bestCurrency: String? = null
@@ -85,9 +89,8 @@ class ScanPriceDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        previewView = view.findViewById(R.id.previewView)
         roiFrame = view.findViewById(R.id.roiFrame)
+        previewView = view.findViewById(R.id.previewView)
         foundText = view.findViewById(R.id.foundText)
         btnFix = view.findViewById(R.id.btnFix)
         val btnCancel = view.findViewById<Button>(R.id.btnCancel)
@@ -109,7 +112,6 @@ class ScanPriceDialogFragment : DialogFragment() {
             resetStability()
             Toast.makeText(requireContext(), "Наведи на цену…", Toast.LENGTH_SHORT).show()
         }
-
 
         btnFix.visibility = if (switchFast.isChecked) View.GONE else View.VISIBLE
         switchFast.setOnCheckedChangeListener { _, isChecked ->
@@ -138,7 +140,6 @@ class ScanPriceDialogFragment : DialogFragment() {
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         cameraExecutor.shutdown()
@@ -151,13 +152,14 @@ class ScanPriceDialogFragment : DialogFragment() {
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
 
-            val preview = Preview.Builder()
-                .build()
-                .also { it.surfaceProvider = previewView.surfaceProvider }
+            val preview =
+                Preview.Builder().build().also { it.surfaceProvider = previewView.surfaceProvider }
+            previewUseCase = preview
 
             val analysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
+            analysisUseCase = analysis
 
             analysis.setAnalyzer(cameraExecutor) { imageProxy ->
                 val mediaImage = imageProxy.image
@@ -220,7 +222,7 @@ class ScanPriceDialogFragment : DialogFragment() {
                         if (parsed.currency != null) "$amountNorm ${parsed.currency}" else amountNorm
                 }
 
-                if (switchFast.isChecked && stableHits >= 2) {
+                if ((switchFast.isChecked || isScanning) && stableHits >= 2) {
                     deliver(amountNorm, parsed.currency)
                 }
             }
@@ -242,22 +244,45 @@ class ScanPriceDialogFragment : DialogFragment() {
 
     @OptIn(TransformExperimental::class)
     private fun mapRoiToImage(imageProxy: ImageProxy): Rect? {
-        val overlay = roiFrame as? RoiOverlayView ?: return null
-        val roiView = overlay.getRoiInView()
-        val out = previewView.outputTransform ?: return null
-        val m = android.graphics.Matrix()
-        if (!out.matrix.invert(m)) return null
+        val overlay = roiFrame
+        val roiLocal = overlay.getRoiInView()
+
+        val roiLoc = IntArray(2)
+        val pvLoc = IntArray(2)
+        overlay.getLocationInWindow(roiLoc)
+        previewView.getLocationInWindow(pvLoc)
+
+        val dx = (roiLoc[0] - pvLoc[0]).toFloat()
+        val dy = (roiLoc[1] - pvLoc[1]).toFloat()
+
+        val roiInPreview = RectF(
+            roiLocal.left + dx,
+            roiLocal.top + dy,
+            roiLocal.right + dx,
+            roiLocal.bottom + dy
+        )
+
+        val pvTransform = previewView.outputTransform ?: return null
+
+        val factory = ImageProxyTransformFactory().apply {
+            isUsingRotationDegrees = true
+            isUsingCropRect = true
+        }
+        val imgTransform = factory.getOutputTransform(imageProxy)
+
+        val pvToImg = CoordinateTransform(pvTransform, imgTransform)
 
         val pts = floatArrayOf(
-            roiView.left, roiView.top,
-            roiView.right, roiView.bottom
+            roiInPreview.left, roiInPreview.top,
+            roiInPreview.right, roiInPreview.bottom
         )
-        m.mapPoints(pts)
+        pvToImg.mapPoints(pts)
 
         val l = min(pts[0], pts[2]).toInt()
         val t = min(pts[1], pts[3]).toInt()
         val r = max(pts[0], pts[2]).toInt()
         val b = max(pts[1], pts[3]).toInt()
+
         val cl = l.coerceAtLeast(0)
         val ct = t.coerceAtLeast(0)
         val cr = r.coerceAtMost(imageProxy.width)
@@ -274,10 +299,21 @@ class ScanPriceDialogFragment : DialogFragment() {
         return extractBestPriceAndCurrency(text)
     }
 
+    private fun centerInside(box: Rect, roi: Rect): Boolean {
+        val cx = (box.left + box.right) / 2
+        val cy = (box.top + box.bottom) / 2
+        return roi.contains(cx, cy)
+    }
+
     private fun parseBigTag(blocks: List<TextBlock>, roi: Rect): Parsed? {
         val roiText = buildTextFromRoi(blocks, roi)
         if (!roiText.isNullOrBlank()) {
-            val m = Regex("""(?<!\d)(\d{1,3})\s*[.,]?\s*(\d{2})(?!\d)""").find(roiText.replace('\n',' '))
+            val m = Regex("""(?<!\d)(\d{1,3})\s*[.,]?\s*(\d{2})(?!\d)""").find(
+                roiText.replace(
+                    '\n',
+                    ' '
+                )
+            )
             if (m != null) {
                 val amount = "${m.groupValues[1]}.${m.groupValues[2]}"
                 val v = amount.toDoubleOrNull()
@@ -296,7 +332,7 @@ class ScanPriceDialogFragment : DialogFragment() {
         for (b in blocks) {
             for (line in b.lines) {
                 val lb = line.boundingBox ?: continue
-                if (!Rect.intersects(roi, lb)) continue
+                if (!centerInside(lb, roi)) continue
 
                 val lineText = line.text
                 val cur = detectCurrencyNear(lineText)
@@ -304,7 +340,7 @@ class ScanPriceDialogFragment : DialogFragment() {
 
                 for (el in line.elements) {
                     val box = el.boundingBox ?: continue
-                    if (!Rect.intersects(roi, box)) continue
+                    if (!centerInside(lb, roi)) continue
                     val t = el.text
                     val n = normalizeDigitsToken(t) ?: continue
                     nums.add(NumToken(n, box))
@@ -390,13 +426,59 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private fun buildTextFromRoi(blocks: List<TextBlock>, roi: Rect): String? {
-        val sb = StringBuilder()
+        data class Tok(val text: String, val box: Rect)
+
+        fun overlapRatio(a: Rect, b: Rect): Float {
+            val ixL = max(a.left, b.left)
+            val ixT = max(a.top, b.top)
+            val ixR = min(a.right, b.right)
+            val ixB = min(a.bottom, b.bottom)
+            if (ixR <= ixL || ixB <= ixT) return 0f
+            val inter = (ixR - ixL) * (ixB - ixT)
+            val area = (a.width() * a.height()).coerceAtLeast(1)
+            return inter.toFloat() / area.toFloat()
+        }
+
+        fun centerInside(a: Rect, b: Rect): Boolean {
+            val cx = (a.left + a.right) / 2
+            val cy = (a.top + a.bottom) / 2
+            return b.contains(cx, cy)
+        }
+
+        val tokens = ArrayList<Tok>(64)
+
         for (block in blocks) {
-            val box = block.boundingBox ?: continue
-            if (Rect.intersects(roi, box)) {
-                sb.append(block.text).append(' ')
+            for (line in block.lines) {
+                for (el in line.elements) {
+                    val box = el.boundingBox ?: continue
+                    val ok = centerInside(box, roi) || overlapRatio(box, roi) >= 0.65f
+                    if (!ok) continue
+
+                    val t = el.text.trim()
+                    if (t.isNotEmpty()) tokens.add(Tok(t, box))
+                }
             }
         }
+
+        if (tokens.isEmpty()) return null
+
+        tokens.sortWith(compareBy<Tok>({ it.box.centerY() }, { it.box.left }))
+
+        val sb = StringBuilder()
+        var lastCy = Int.MIN_VALUE
+        var lineH = tokens.first().box.height().coerceAtLeast(1)
+
+        for (tok in tokens) {
+            val cy = tok.box.centerY()
+            val newLine = lastCy != Int.MIN_VALUE && kotlin.math.abs(cy - lastCy) > lineH * 0.55f
+            if (newLine) sb.append('\n') else if (sb.isNotEmpty() && sb.last() != '\n') sb.append(
+                ' '
+            )
+            sb.append(tok.text)
+            lastCy = cy
+            lineH = max(lineH, tok.box.height())
+        }
+
         return sb.toString().trim().ifBlank { null }
     }
 
@@ -509,6 +591,7 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private fun deliver(value: String, currency: String?) {
+        isScanning = false
         parentFragmentManager.setFragmentResult(
             REQ_KEY,
             Bundle().apply {

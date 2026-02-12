@@ -53,7 +53,6 @@ class RoiOverlayView @JvmOverloads constructor(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         if (rect.isEmpty) {
-            // стартовый ROI по центру
             val rw = w * 0.78f
             val rh = h * 0.16f
             rect.set(
@@ -82,6 +81,12 @@ class RoiOverlayView @JvmOverloads constructor(
                 lastY = ev.y
                 return true
             }
+
+            MotionEvent.ACTION_POINTER_DOWN,
+            MotionEvent.ACTION_POINTER_UP -> {
+                return true
+            }
+
             MotionEvent.ACTION_MOVE -> {
                 if (dragging && !scaler.isInProgress) {
                     val dx = ev.x - lastX
@@ -94,12 +99,15 @@ class RoiOverlayView @JvmOverloads constructor(
                 }
                 return true
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+
+            MotionEvent.ACTION_UP,
+            MotionEvent.ACTION_CANCEL -> {
                 dragging = false
                 return true
             }
         }
-        return super.onTouchEvent(ev)
+
+        return true
     }
 
     fun getRoiInView(): RectF = RectF(rect)

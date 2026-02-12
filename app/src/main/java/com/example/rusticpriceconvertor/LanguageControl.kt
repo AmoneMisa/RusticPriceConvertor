@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.core.content.edit
 import java.util.Locale
+
 class LanguageControl(
     private val activity: Activity,
     private val prefs: SharedPreferences
@@ -26,21 +27,23 @@ class LanguageControl(
     fun setupLanguageSpinner(spinner: Spinner) {
         spinner.adapter = LangAdapter(activity, langs)
 
-        val savedLang = prefs.getString("app_lang", null)
+        val savedLang = prefs.getString(KEY_APP_LANG, null)
             ?: detectDeviceLanguage()
             ?: detectLanguageByGeo(activity)
             ?: "en"
 
-        spinner.setSelection(langs.indexOfFirst { it.persistCode == savedLang }.coerceAtLeast(0), false)
+        spinner.setSelection(
+            langs.indexOfFirst { it.persistCode == savedLang }.coerceAtLeast(0),
+            false
+        )
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 val selectedLangCode = langs[pos].persistCode
-                val currentLang = prefs.getString("app_lang", null)
+                val currentLang = prefs.getString(KEY_APP_LANG, null)
                 if (selectedLangCode == currentLang) return
 
-                prefs.edit { putString("app_lang", selectedLangCode) }
-                LocaleUtil.applyLocale(activity, selectedLangCode)
+                prefs.edit { putString(KEY_APP_LANG, selectedLangCode) }
                 activity.recreate()
             }
 
@@ -56,8 +59,10 @@ class LanguageControl(
 
     private fun detectLanguageByGeo(context: Context): String? {
         try {
-            val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val networkCountryIso = telephonyManager.networkCountryIso?.lowercase(Locale.getDefault())
+            val telephonyManager =
+                context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val networkCountryIso =
+                telephonyManager.networkCountryIso?.lowercase(Locale.getDefault())
             return when (networkCountryIso) {
                 "ru" -> "ru"
                 "ua" -> "uk"

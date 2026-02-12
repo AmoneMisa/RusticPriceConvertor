@@ -13,14 +13,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@android:color/transparent"
-        app:implementationMode="compatible"
+        app:implementationMode="performance"
         app:scaleType="fillCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Затемнение/градиент, чтобы текст читался -->
     <View
         android:id="@+id/overlay"
         android:layout_width="0dp"
@@ -61,7 +60,6 @@
             android:textStyle="bold" />
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Тогглы в карточке -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/togglesCard"
         android:layout_width="0dp"
@@ -157,7 +155,6 @@
             tools:text="17,76 RON" />
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Нижняя панель -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomBar"
         android:layout_width="0dp"

@@ -1,9 +1,10 @@
 package com.example.rusticpriceconvertor
 
+import CurrencyIconProvider
+import FiatFlagProvider
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Spinner
 import androidx.annotation.RequiresApi
@@ -30,11 +31,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         World.init(this)
-        Log.d("FiatFlags", "World.init() called")
         thread {
             val symbols = CurrencyApi.fetchSymbols()
-            Log.d("FiatFlags", "symbols.size=${symbols.size}")
-
             CurrencyIconProvider.updateFiatCodes(symbols)
             CurrencyIconProvider.updateCryptoIconUrls(symbols)
             FiatFlagProvider.buildIndex()
