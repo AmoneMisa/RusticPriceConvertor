@@ -21,8 +21,8 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.camera.view.TransformExperimental
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.mlkit.vision.common.InputImage
@@ -100,9 +100,16 @@ class ScanPriceDialogFragment : DialogFragment() {
         btnCancel.setOnClickListener { dismissAllowingStateLoss() }
 
         btnFix.setOnClickListener {
+            val v = bestValue
+            if (!v.isNullOrBlank()) {
+                deliver(v, bestCurrency)
+                return@setOnClickListener
+            }
             isScanning = true
             resetStability()
+            Toast.makeText(requireContext(), "Наведи на цену…", Toast.LENGTH_SHORT).show()
         }
+
 
         btnFix.visibility = if (switchFast.isChecked) View.GONE else View.VISIBLE
         switchFast.setOnCheckedChangeListener { _, isChecked ->
@@ -233,35 +240,31 @@ class ScanPriceDialogFragment : DialogFragment() {
         }
     }
 
+    @OptIn(TransformExperimental::class)
     private fun mapRoiToImage(imageProxy: ImageProxy): Rect? {
+        val overlay = roiFrame as? RoiOverlayView ?: return null
+        val roiView = overlay.getRoiInView()
+        val out = previewView.outputTransform ?: return null
+        val m = android.graphics.Matrix()
+        if (!out.matrix.invert(m)) return null
 
-        val pvW = previewView.width.toFloat()
-        val pvH = previewView.height.toFloat()
+        val pts = floatArrayOf(
+            roiView.left, roiView.top,
+            roiView.right, roiView.bottom
+        )
+        m.mapPoints(pts)
 
-        if (pvW == 0f || pvH == 0f) return null
+        val l = min(pts[0], pts[2]).toInt()
+        val t = min(pts[1], pts[3]).toInt()
+        val r = max(pts[0], pts[2]).toInt()
+        val b = max(pts[1], pts[3]).toInt()
+        val cl = l.coerceAtLeast(0)
+        val ct = t.coerceAtLeast(0)
+        val cr = r.coerceAtMost(imageProxy.width)
+        val cb = b.coerceAtMost(imageProxy.height)
 
-        val roiLoc = IntArray(2)
-        val pvLoc = IntArray(2)
-
-        roiFrame.getLocationOnScreen(roiLoc)
-        previewView.getLocationOnScreen(pvLoc)
-
-        val left = (roiLoc[0] - pvLoc[0]).toFloat() / pvW
-        val top = (roiLoc[1] - pvLoc[1]).toFloat() / pvH
-        val right = (left + roiFrame.width / pvW)
-        val bottom = (top + roiFrame.height / pvH)
-
-        val imgW = imageProxy.width.toFloat()
-        val imgH = imageProxy.height.toFloat()
-
-        val l = (left * imgW).toInt().coerceAtLeast(0)
-        val t = (top * imgH).toInt().coerceAtLeast(0)
-        val r = (right * imgW).toInt().coerceAtMost(imageProxy.width)
-        val b = (bottom * imgH).toInt().coerceAtMost(imageProxy.height)
-
-        if (r <= l || b <= t) return null
-
-        return Rect(l, t, r, b)
+        if (cr <= cl || cb <= ct) return null
+        return Rect(cl, ct, cr, cb)
     }
 
     private data class Parsed(val amount: String, val currency: String?)
@@ -272,6 +275,21 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private fun parseBigTag(blocks: List<TextBlock>, roi: Rect): Parsed? {
+        val roiText = buildTextFromRoi(blocks, roi)
+        if (!roiText.isNullOrBlank()) {
+            val m = Regex("""(?<!\d)(\d{1,3})\s*[.,]?\s*(\d{2})(?!\d)""").find(roiText.replace('\n',' '))
+            if (m != null) {
+                val amount = "${m.groupValues[1]}.${m.groupValues[2]}"
+                val v = amount.toDoubleOrNull()
+                if (v != null && v > 0.0 && v < 1_000_000.0) {
+                    val cur = detectCurrencyNear(roiText)
+                    return Parsed(amount, cur)
+                }
+            }
+
+            extractBestPriceAndCurrency(roiText)?.let { return it }
+        }
+
         val nums = mutableListOf<NumToken>()
         val curTokens = mutableListOf<String>()
 

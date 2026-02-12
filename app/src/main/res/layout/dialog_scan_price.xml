@@ -117,15 +117,10 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- ROI -->
-    <View
+    <com.example.rusticpriceconvertor.RoiOverlayView
         android:id="@+id/roiFrame"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="14dp"
-        android:background="@drawable/roi_frame"
-        app:layout_constraintWidth_percent="0.78"
-        app:layout_constraintHeight_percent="0.16"
         app:layout_constraintTop_toBottomOf="@id/togglesCard"
         app:layout_constraintBottom_toTopOf="@id/foundPill"
         app:layout_constraintStart_toStartOf="parent"
