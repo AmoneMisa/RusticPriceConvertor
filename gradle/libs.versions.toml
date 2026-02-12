@@ -1,6 +1,8 @@
 [versions]
 agp = "8.13.2"
+coil = "2.7.0"
 gson = "2.13.2"
+icu4j = "78.2"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -23,12 +25,15 @@ camerax = "1.5.3"
 mlkitText = "16.0.1"
 cameraView = "1.5.3"
 cameraLifecycle = "1.5.3"
+worldcountrydata = "v1.5.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx-v284 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2Version" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -57,6 +62,7 @@ androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "
 google-mlkit-text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "mlkitText" }
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
+worldcountrydata = { module = "com.github.blongho:worldCountryData", version.ref = "worldcountrydata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

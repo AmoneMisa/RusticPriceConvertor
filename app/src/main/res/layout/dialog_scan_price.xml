@@ -33,7 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Подсказка в плашке -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/hintCard"
         android:layout_width="0dp"
@@ -126,7 +125,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- “Найдено” в pill -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/foundPill"
         android:layout_width="wrap_content"

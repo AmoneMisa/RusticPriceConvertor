@@ -23,6 +23,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 
 class CurrencyPickerDialog : DialogFragment() {
 
@@ -131,7 +132,6 @@ class CurrencyPickerDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        // ширина: single — уже, multi — шире
         dialog?.window?.let { w ->
             val dm = resources.displayMetrics
             val width = (dm.widthPixels * if (isBaseSingle()) 0.86f else 0.92f).toInt()
@@ -145,8 +145,6 @@ class CurrencyPickerDialog : DialogFragment() {
         etSearch = d.findViewById(R.id.searchInput)
         rvList = d.findViewById(R.id.currencyList)
         btnOk = d.findViewById(R.id.btnOk)
-
-        // multi-only views (мы добавим их в layout ниже)
         selectedContainer = d.findViewById(R.id.selectedContainer)
         rvSelected = d.findViewById(R.id.selectedGrid)
     }
@@ -178,7 +176,6 @@ class CurrencyPickerDialog : DialogFragment() {
             btnOk.visibility = View.GONE
             selectedContainer.visibility = View.GONE
         } else {
-            // ВАЖНО: обнови строку в strings на "… (мин. 1, макс. 20)"
             tvTitle.text = getString(R.string.title_secondary_currencies)
             btnOk.visibility = View.VISIBLE
             selectedContainer.visibility = View.VISIBLE
@@ -197,7 +194,6 @@ class CurrencyPickerDialog : DialogFragment() {
             dismissAllowingStateLoss()
         }
 
-        // selected chips (multi)
         rvSelected.layoutManager = GridLayoutManager(requireContext(), 3)
         rvSelected.itemAnimator = null
         selectedAdapter = SelectedChipAdapter(
@@ -209,8 +205,6 @@ class CurrencyPickerDialog : DialogFragment() {
             }
         )
         rvSelected.adapter = selectedAdapter
-
-        // main list
         rvList.layoutManager = LinearLayoutManager(requireContext())
         rvList.itemAnimator = null
         listAdapter = CurrencyListAdapter(
@@ -253,8 +247,6 @@ class CurrencyPickerDialog : DialogFragment() {
         }
 
         if (selectedSecondaryLocal.size >= MAX_SECONDARY) {
-            // чтобы не плодить новых строк — просто тостом на существующую, если хочешь.
-            // но у тебя нет готовой строки "max 20" -> поэтому без новых ключей:
             Toast.makeText(requireContext(), "Максимум $MAX_SECONDARY", Toast.LENGTH_SHORT).show()
             return
         }
@@ -310,14 +302,12 @@ class CurrencyPickerDialog : DialogFragment() {
                 addAll(others)
             }
         } else {
-            // multi: выбранные мы показываем ВВЕРХУ чипами, поэтому из списка их убираем
             val selectedCodes = selectedSecondaryLocal.toSet()
 
             val favorites = filteredAll.filter { it.code in favCodes && it.code !in selectedCodes }
             val others = filteredAll.filter { it.code !in favCodes && it.code !in selectedCodes }
 
             buildList {
-                // если хочешь — можешь добавить заголовок "Избранное" только если есть
                 if (favorites.isNotEmpty()) {
                     add(Row.SectionHeader(getString(R.string.section_favorites)))
                     addAll(favorites)
@@ -371,17 +361,39 @@ class CurrencyPickerDialog : DialogFragment() {
 
         override fun onBindViewHolder(holder: SelectedChipVH, position: Int) {
             val item = items[position]
-
             holder.code.text = item.code
-            holder.icon.setImageResource(item.iconRes ?: R.drawable.ic_currency_placeholder)
 
-            holder.itemView.setOnClickListener {
-                onRemove(item.code)
+            when (val icon = CurrencyIconProvider.resolve(item.code)) {
+                is CurrencyIconProvider.IconRef.Res -> holder.icon.setImageResource(icon.resId)
+
+                is CurrencyIconProvider.IconRef.Url -> holder.icon.load(icon.url) {
+                    placeholder(R.drawable.ic_currency_placeholder)
+                    error(R.drawable.ic_currency_placeholder)
+                    transformations(coil.transform.CircleCropTransformation())
+                }
+
+                is CurrencyIconProvider.IconRef.Text -> {
+                    val density = holder.itemView.context.resources.displayMetrics.density
+                    val bg = ContextCompat.getColor(holder.itemView.context, R.color.bg1)
+                    val fg = ContextCompat.getColor(holder.itemView.context, R.color.text)
+                    val stroke =
+                        ContextCompat.getColor(holder.itemView.context, R.color.fav_orange_light)
+                    holder.icon.setImageDrawable(
+                        TickerCircleDrawable(
+                            icon.text,
+                            bg,
+                            fg,
+                            density,
+                            stroke
+                        )
+                    )
+                }
             }
+
+            holder.itemView.setOnClickListener { onRemove(item.code) }
         }
     }
 
-    // ===== main list adapter (sections + currencies) =====
     private class SectionVH(v: View) : RecyclerView.ViewHolder(v) {
         private val title: TextView = v.findViewById(R.id.sectionTitle)
         fun bind(text: String) {
@@ -451,10 +463,34 @@ class CurrencyPickerDialog : DialogFragment() {
             val code = row.code
             val disabled = disabledCodesProvider().contains(code)
 
-            vh.icon.setImageResource(row.iconRes ?: R.drawable.ic_currency_placeholder)
+            when (val icon = CurrencyIconProvider.resolve(code)) {
+                is CurrencyIconProvider.IconRef.Res -> vh.icon.setImageResource(icon.resId)
+
+                is CurrencyIconProvider.IconRef.Url -> vh.icon.load(icon.url) {
+                    placeholder(R.drawable.ic_currency_placeholder)
+                    error(R.drawable.ic_currency_placeholder)
+                    transformations(coil.transform.CircleCropTransformation())
+                }
+
+                is CurrencyIconProvider.IconRef.Text -> {
+                    val density = vh.itemView.context.resources.displayMetrics.density
+                    val bg = ContextCompat.getColor(context, R.color.bg1)
+                    val fg = ContextCompat.getColor(context, R.color.text)
+                    val stroke = ContextCompat.getColor(context, R.color.fav_orange_light)
+                    vh.icon.setImageDrawable(
+                        TickerCircleDrawable(
+                            icon.text,
+                            bg,
+                            fg,
+                            density,
+                            stroke
+                        )
+                    )
+                }
+            }
+
             vh.code.text = code
             vh.name.text = row.name
-
             val selected = isSelected(code)
             vh.code.setTypeface(vh.code.typeface, if (selected) Typeface.BOLD else Typeface.NORMAL)
             vh.name.setTypeface(vh.name.typeface, if (selected) Typeface.BOLD else Typeface.NORMAL)
