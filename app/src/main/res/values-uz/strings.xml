@@ -1,0 +1,150 @@
+<resources>
+    <string name="app_name">Rustic Price Converter</string>
+    <string name="search_currency">Valyutani qidirish</string>
+    <string name="choose_currencies">VALYUTALAR</string>
+    <string name="btn_close">Yopish</string>
+    <string name="btn_ok">OK</string>
+    <string name="price_input">Narx</string>
+    <string name="quantity_input">Miqdor</string>
+    <string name="count">Son</string>
+    <string name="price_for_label">Narx quyidagiga ko‘rsatilgan:</string>
+    <string name="hint_amount_for_price_weight">narxda ko‘rsatilgan g/kg miqdori</string>
+    <string name="hint_amount_for_price_volume">narxda ko‘rsatilgan ml/l miqdori</string>
+    <string name="hint_qty_pieces">Birliklar soni</string>
+    <string name="hint_qty_kg">Og‘irlik, kg</string>
+    <string name="hint_qty_g">Og‘irlik, g</string>
+    <string name="hint_qty_l">Hajm, l</string>
+    <string name="hint_qty_ml">Hajm, ml</string>
+    <string name="title_base_currency">Asosiy valyuta</string>
+    <string name="title_secondary_currencies_fmt">Konvertatsiya uchun valyutalar (min. %1$d, maks. %2$d)</string>
+    <string name="warn_max_currencies">Ko‘pi bilan %1$d ta valyutani tanlash mumkin.</string>
+    <string name="section_current">Joriy</string>
+    <string name="section_selected">Tanlanganlar</string>
+    <string name="section_recent">So‘nggilari</string>
+    <string name="section_others">Boshqalar</string>
+    <string name="err_load_currencies">Valyutalar ro‘yxatini yuklab bo‘lmadi</string>
+    <string name="err_fetch_rates">%1$s uchun kurslarni olib bo‘lmadi</string>
+    <string name="warn_need_at_least_one">Kamida bitta valyutani tanlang</string>
+    <string name="piece_price">Birlik narxi: %1$.2f %2$s</string>
+    <string name="piece_count">Birliklar soni: %1$d</string>
+    <string name="converted_per_piece_title">Birlik uchun konvertatsiya qilingan qiymat:</string>
+    <string name="converted_total_title">Konvertatsiya qilingan umumiy qiymat:</string>
+    <string name="price_for">Narx </string>
+    <string name="price_per_any_format">%1$s: %2$.2f %3$s</string>
+    <string name="taken_generic">Olingan (%1$s): %2$s</string>
+    <string name="cost_per_kg_and_100g">1 kg / 100 g uchun narx: %1$.2f / %2$.2f %3$s</string>
+    <string name="cost_per_l_and_100ml">1 l / 100 ml uchun narx:
+%1$.2f / %2$.2f %3$s</string>
+    <string name="converted_per_kg_title">1 kg uchun konvertatsiya qilingan qiymat:</string>
+    <string name="converted_per_100g_title">100 g uchun konvertatsiya qilingan qiymat:</string>
+    <string name="converted_per_l_title">1 l uchun konvertatsiya qilingan qiymat:</string>
+    <string name="converted_per_100ml_title">100 ml uchun konvertatsiya qilingan qiymat:</string>
+    <string name="converted_total_weight_title">Konvertatsiya qilingan umumiy qiymat:</string>
+    <string name="dash_price">— uchun narx: —</string>
+    <string name="dash">—</string>
+    <string name="language_ru">Русский</string>
+    <string name="language_uk">Українська</string>
+    <string name="language_en">English</string>
+    <string name="language_ro">Română</string>
+    <string name="language_kk">Қазақ</string>
+    <string name="language_uz">O\'zbek</string>
+    <string name="currency_selected">Tanlanganlar</string>
+    <string name="favorite_toggle">Sevimlini almashtirish</string>
+    <string name="unit_piece">dona</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_g">g</string>
+    <string name="unit_l">l</string>
+    <string name="unit_ml">ml</string>
+    <string-array name="units_main">
+        <item>@string/unit_piece</item>
+        <item>@string/unit_kg</item>
+        <item>@string/unit_g</item>
+        <item>@string/unit_l</item>
+        <item>@string/unit_ml</item>
+    </string-array>
+    <string-array name="units_mass">
+        <item>@string/unit_g</item>
+        <item>@string/unit_kg</item>
+    </string-array>
+    <string-array name="units_volume">
+        <item>@string/unit_ml</item>
+        <item>@string/unit_l</item>
+    </string-array>
+    <string name="price_amount_hint_volume">narxda ko‘rsatilgan ml/l miqdori</string>
+    <string name="price_amount_hint_mass">narxda ko‘rsatilgan g/kg miqdori</string>
+    <string name="tab_converter">Konverter</string>
+    <string name="tab_compare">Taqqoslash</string>
+    <string name="compare_weighted">Vazn bo‘yicha sotiladigan mahsulotlar narxlarini taqqoslash</string>
+    <string name="add_more">Yana qo‘shish</string>
+    <string name="compare_price_hint">Narx</string>
+    <string name="compare_amount_hint">Miqdor</string>
+    <string name="remove">O‘chirish</string>
+    <string name="compare_need_more">Kamida ikkita mahsulot qo‘shing.</string>
+    <string name="compare_mixed_families">Vazn va hajmni birga taqqoslab bo‘lmaydi. Bir xil birlik turini tanlang.</string>
+    <string name="compare_item">Mahsulot %1$d</string>
+    <string name="compare_by_price">narx bo‘yicha</string>
+    <string name="compare_by_kg">1 kg uchun</string>
+    <string name="compare_by_l">1 l uchun</string>
+    <string name="compare_amount_hint_example">Mas. 750</string>
+    <string name="compare_amount_hint_g">Mas. 750 </string>
+    <string name="compare_amount_hint_kg">Mas. 2.55</string>
+    <string name="compare_amount_hint_ml">Mas. 970</string>
+    <string name="compare_amount_hint_l">Mas. 1.33</string>
+    <string name="compare_line_price">%1$d) %2$s — %3$s</string>
+    <string name="compare_line_weighted">%1$d) %2$s — %3$s</string>
+    <string name="compare_by_weight">Vazn/hajm bo‘yicha taqqoslash</string>
+    <string name="label_price_item_n">Mahsulot narxi</string>
+    <string name="item_label_default">Mahsulot</string>
+    <string name="item_n">Mahsulot %1$d</string>
+    <string name="delete">O‘chirish</string>
+    <string name="compare_pair_line">%1$s %2$s dan %3$s ga arzon (%4$s%%)</string>
+    <string name="compare_max_items">Ko‘pi bilan %1$d ta mahsulotni taqqoslash mumkin</string>
+    <string name="scan_hint">Kamerani narxga yo‘naltiring</string>
+    <string name="scan_price">Narxni skanerlash</string>
+    <string name="freeze">Muzlatish</string>
+    <string name="fast_mode">Tezkor rejim</string>
+    <string name="big_price_tag">Katta narx yorlig‘i</string>
+    <string name="scan">Skanerlash</string>
+    <string name="fix">Mahkamlash</string>
+    <string name="need_scan_first">“Skanerlash” ni bosing</string>
+    <string name="no_result_yet">Hali natija yo‘q</string>
+    <string name="close">Yopish</string>
+    <string name="label_price">Narx</string>
+    <string name="hint_price">0</string>
+    <string name="label_qty">Miqdor</string>
+    <string name="label_price_unit">Narx</string>
+    <string name="label_result">Natija</string>
+    <string name="btn_select_currencies">Valyutalarni tanlash</string>
+    <string name="result_hint_piece">1-narx — %1$s uchun, 2-narx — kiritilgan miqdor uchun.</string>
+    <string name="result_hint_volume">1-narx — %1$s uchun, 2-narx — kiritilgan hajm uchun.</string>
+    <string name="result_hint_weight">1-narx — %1$s uchun, 2-narx — kiritilgan vazn uchun.</string>
+    <string name="unit_1">%1$d %2$s</string>
+    <string name="unit_100">%1$d %2$s</string>
+    <string name="section_selected_one">Tanlangan</string>
+    <string name="section_favorites">Sevimlilar</string>
+    <string name="section_all">Umumiy ro‘yxat</string>
+    <string name="cd_currency_icon">Valyuta belgisi</string>
+    <string name="cd_favorite">Sevimlilarga qo‘shish</string>
+    <string name="cd_favorite_remove">Sevimlilardan olib tashlash</string>
+    <string name="no_results">Hech narsa topilmadi</string>
+    <string name="favorite_added">Sevimlilarga qo‘shildi</string>
+    <string name="favorite_removed">Sevimlilardan olib tashlandi</string>
+    <string name="compare_better">Yaxshiroq</string>
+    <string name="compare_summary">%1$s %2$s ga arzon (%3$s%%)</string>
+    <string name="compare_unit_piece_short">dona</string>
+    <string name="compare_per_kg">1 kg uchun</string>
+    <string name="compare_per_l">1 l uchun</string>
+    <string name="compare_mode_label">Vazn / hajm bo‘yicha taqqoslash</string>
+    <string name="compare_add_item">Mahsulot qo‘shish</string>
+    <string name="compare_better_default">Eng yaxshi variant</string>
+    <string name="compare_item_placeholder">Mahsulot</string>
+    <string name="compare_amount_hint_generic">Miqdor</string>
+    <string name="cd_remove_item">Mahsulotni o‘chirish</string>
+    <string name="compare_per_piece">1 dona uchun</string>
+    <string name="compare_best_only">%1$d-mahsulot yaxshiroq</string>
+    <string name="compare_hint_price">Narx</string>
+    <string name="compare_hint_amount">Miqdor</string>
+    <string name="compare_best_line">%1$s — %2$s %3$s ga yaxshiroq (%4$s%%)\n%5$s</string>
+    <string name="title_secondary_currencies">Konvertatsiya uchun valyutalar (min. 1, maks. 20)</string>
+    <string name="choose_secondary_currencies">Konvertatsiya uchun valyutalar</string>
+</resources>

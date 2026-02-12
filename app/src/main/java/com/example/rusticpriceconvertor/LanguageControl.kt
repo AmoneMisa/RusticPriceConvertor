@@ -19,6 +19,8 @@ class LanguageControl(
         LangItem("uk", "UA", R.string.language_uk),
         LangItem("en", "EN", R.string.language_en),
         LangItem("ro", "RO", R.string.language_ro),
+        LangItem("kk", "KZ", R.string.language_kk),
+        LangItem("uz", "UZ", R.string.language_uz),
     )
 
     fun setupLanguageSpinner(spinner: Spinner) {

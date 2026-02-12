@@ -458,14 +458,8 @@ class CurrencyPickerDialog : DialogFragment() {
             val selected = isSelected(code)
             vh.code.setTypeface(vh.code.typeface, if (selected) Typeface.BOLD else Typeface.NORMAL)
             vh.name.setTypeface(vh.name.typeface, if (selected) Typeface.BOLD else Typeface.NORMAL)
-
-            // без серых подложек/лишних рамок: оставляем как в row_currency (фон/рипл у тебя уже есть)
             vh.itemView.isEnabled = !disabled
             vh.itemView.alpha = if (disabled) 0.4f else 1f
-
-            // сердечко:
-            // - в base (single) показываем всегда
-            // - в multi показываем для строк списка (выбранные вынесены в чипы, там сердечка нет)
             vh.heart.visibility = View.VISIBLE
 
             fun applyHeart(fav: Boolean) {

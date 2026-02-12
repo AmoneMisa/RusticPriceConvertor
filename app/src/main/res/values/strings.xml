@@ -1,29 +1,20 @@
 <resources>
-    <!-- App -->
     <string name="app_name">Rustic Price Convertor</string>
-
-    <!-- Общие/кнопки/диалоги -->
     <string name="search_currency">Поиск валюты</string>
     <string name="choose_currencies">ВАЛЮТЫ</string>
     <string name="btn_close">Закрыть</string>
     <string name="btn_ok">OK</string>
-
-    <!-- Поля ввода -->
     <string name="price_input">Цена</string>
     <string name="quantity_input">Количество</string>
     <string name="count">Число</string>
     <string name="price_for_label">Цена указана за:</string>
-
-    <!-- Подсказки -->
     <string name="hint_amount_for_price_weight">сколько г/кг указано в цене</string>
     <string name="hint_amount_for_price_volume">сколько мл/л указано в цене</string>
-    <string name="hint_qty_pieces">Количество штук</string>
+    <string name="hint_qty_pieces">Количество единиц</string>
     <string name="hint_qty_kg">Вес, кг</string>
     <string name="hint_qty_g">Вес, г</string>
     <string name="hint_qty_l">Объём, л</string>
     <string name="hint_qty_ml">Объём, мл</string>
-
-    <!-- Диалоги выбора валют -->
     <string name="title_base_currency">Основная валюта</string>
     <string name="title_secondary_currencies_fmt">Валюты для конвертации (мин. %1$d, макс. %2$d)</string>
     <string name="warn_max_currencies">Можно выбрать максимум %1$d валют.</string>
@@ -31,44 +22,35 @@
     <string name="section_selected">Текущие</string>
     <string name="section_recent">Последние</string>
     <string name="section_others">Остальные</string>
-
-    <!-- Тосты/ошибки -->
     <string name="err_load_currencies">Не удалось загрузить список валют</string>
     <string name="err_fetch_rates">Не удалось получить курсы для %1$s</string>
     <string name="warn_need_at_least_one">Нужно выбрать хотя бы одну валюту</string>
-
-    <!-- Штучный товар -->
-    <string name="piece_price">Цена за штуку: %1$.2f %2$s</string>
-    <string name="piece_count">Количество штук: %1$d</string>
-    <string name="converted_per_piece_title">Конвертированная стоимость за штуку:</string>
+    <string name="piece_price">Цена за единицу: %1$.2f %2$s</string>
+    <string name="piece_count">Количество единиц: %1$d</string>
+    <string name="converted_per_piece_title">Конвертированная стоимость за единицу:</string>
     <string name="converted_total_title">Конвертированная итоговая стоимость:</string>
-
-    <!-- Вес/объём -->
     <string name="price_for">Цена за </string>
     <string name="price_per_any_format">%1$s: %2$.2f %3$s</string>
     <string name="taken_generic">Взято (%1$s): %2$s</string>
     <string name="cost_per_kg_and_100g">Стоимость за 1 кг / 100 г: %1$.2f / %2$.2f %3$s</string>
     <string name="cost_per_l_and_100ml">Стоимость за 1 л / 100 мл:
 %1$.2f / %2$.2f %3$s</string>
-
     <string name="converted_per_kg_title">Конвертированная стоимость за 1 кг:</string>
     <string name="converted_per_100g_title">Конвертированная стоимость за 100 г:</string>
     <string name="converted_per_l_title">Конвертированная стоимость за 1 л:</string>
     <string name="converted_per_100ml_title">Конвертированная стоимость за 100 мл:</string>
     <string name="converted_total_weight_title">Конвертированная итоговая стоимость:</string>
-
-    <!-- Пустые состояния -->
     <string name="dash_price">Цена за —: —</string>
     <string name="dash">—</string>
-
-    <!-- Языки -->
     <string name="language_ru">Русский</string>
     <string name="language_uk">Українська</string>
     <string name="language_en">English</string>
     <string name="language_ro">Română</string>
+    <string name="language_kk">Қазақ</string>
+    <string name="language_uz">O\'zbek</string>
     <string name="currency_selected">Выбранные</string>
     <string name="favorite_toggle">Переключение избранного</string>
-    <string name="unit_piece">шт.</string>
+    <string name="unit_piece">ед.</string>
     <string name="unit_kg">кг</string>
     <string name="unit_g">г</string>
     <string name="unit_l">л</string>
@@ -149,10 +131,7 @@
     <string name="favorite_removed">Удалено из избранного</string>
     <string name="compare_better">Выгоднее</string>
     <string name="compare_summary">%1$s дешевле на %2$s (%3$s%%)</string>
-    <string name="compare_summary_all_line">✨ %1$s дешевле на %2$s (%3$s%%)</string>
-    <string name="compare_unit_piece_short">шт.</string>
-    <string name="compare_chain_line">%1$s дешевле %2$s на %3$s%%</string>
-    <string name="compare_mode_piece_short">за 1 шт</string>
+    <string name="compare_unit_piece_short">ед.</string>
     <string name="compare_per_kg">за 1 кг</string>
     <string name="compare_per_l">за 1 л</string>
     <string name="compare_mode_label">Сравнивать по весу / объёму</string>
