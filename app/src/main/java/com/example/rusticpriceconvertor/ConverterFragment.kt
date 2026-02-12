@@ -52,8 +52,6 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     private lateinit var pieceCountLabel: TextView
     private lateinit var pieceConvertedPerItem: TextView
     private lateinit var pieceConvertedTotal: TextView
-
-    // Вес/объём
     private lateinit var modeWeight: LinearLayout
     private lateinit var pricePerUnitLabel: TextView
     private lateinit var takenAmountLabel: TextView
@@ -62,7 +60,6 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     private lateinit var convertedPerBaseUnitLabel: TextView
     private lateinit var convertedTotalLabel: TextView
 
-    // --------- Данные валют ----------
     private var symbolNames: Map<String, String> = emptyMap()  // code -> name
     private var allSymbols: List<String> = emptyList()
     private var selectedSymbols: MutableList<String> = mutableListOf("USD", "EUR")
@@ -70,6 +67,15 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
     private val prefs by lazy {
         requireContext().getSharedPreferences("currency_prefs", Context.MODE_PRIVATE)
+    }
+
+    private fun parseDoubleFrom(et: EditText): Double {
+        val s = et.text?.toString().orEmpty()
+            .trim()
+            .replace('\u00A0', ' ')
+            .replace(" ", "")
+            .replace(',', '.')
+        return s.toDoubleOrNull() ?: 0.0
     }
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -91,14 +97,23 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             ScanPriceDialogFragment.REQ_KEY,
             viewLifecycleOwner
         ) { _, b ->
-            val value = b.getString(ScanPriceDialogFragment.RESULT_VALUE)
+            val valueRaw = b.getString(ScanPriceDialogFragment.RESULT_VALUE)
                 ?: return@setFragmentResultListener
             val cur = b.getString(ScanPriceDialogFragment.RESULT_CURRENCY)
 
+            val value = valueRaw
+                .trim()
+                .replace('\u00A0', ' ')
+                .replace(" ", "")
+                .replace(',', '.')
+
             priceInput.setText(value)
+            priceInput.setSelection(value.length)
 
             if (!cur.isNullOrBlank() && allSymbols.contains(cur)) {
                 baseCurrencySpinner.setSelection(allSymbols.indexOf(cur))
+            } else {
+                recalc()
             }
         }
 
@@ -138,8 +153,11 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             .filter { it != base }
             .mapNotNull { code ->
                 val rate = rates[code] ?: return@mapNotNull null
-                // A = "за введённое", B = "за 100г/100мл/1шт"
-                Triple(code, formatMoney(amountAInBase * rate), formatMoney(amountBInBase * rate))
+
+                val a = formatMoney(amountAInBase * rate)
+                val b = formatMoney(amountBInBase * rate)
+
+                Triple(code, a, b)
             }
 
         val layoutId = R.layout.item_result_row_2cols
@@ -164,17 +182,15 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 val div = View(requireContext()).apply {
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        (resources.displayMetrics.density).toInt().coerceAtLeast(1) // ~1dp
+                        (resources.displayMetrics.density).toInt().coerceAtLeast(1)
                     )
-                    background =
-                        ContextCompat.getDrawable(requireContext(), R.drawable.divider_result)
+                    background = ContextCompat.getDrawable(requireContext(), R.drawable.divider_result)
                 }
                 resultList.addView(div)
             }
         }
     }
 
-    // ========= Валюты: загрузка + привязка =========
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun setupCurrencyUi() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -346,34 +362,37 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         }
     }
 
-    // ========= Расчёты =========
     private fun recalc() {
+        val qtyRaw = quantityInput.text?.toString().orEmpty().trim()
+
+        val qty = when {
+            qtyRaw.isBlank() -> 1.0
+            else -> qtyRaw.replace(',', '.').toDoubleOrNull() ?: 0.0
+        }
+
         val unitPiece = getString(R.string.unit_piece)
         val unitMl = getString(R.string.unit_ml)
         val unitL = getString(R.string.unit_l)
         val unitG = getString(R.string.unit_g)
         val unitKg = getString(R.string.unit_kg)
-
         val sellUnit = (quantityTypeSpinner.selectedItem ?: unitPiece).toString()
-        val price = priceInput.text.toString().toDoubleOrNull() ?: 0.0
-        val qty = quantityInput.text.toString().toDoubleOrNull() ?: 0.0
+        val price = parseDoubleFrom(priceInput)
 
-        // --- Штучно ---
         if (sellUnit == unitPiece) {
             priceUnitRow.visibility = View.GONE
             quantityInput.hint = getString(R.string.hint_qty_pieces)
 
             val total = price * qty
-
-            // A = за введённое количество, B = за 1 шт
-            renderCompareTable(amountAInBase = total, amountBInBase = price)
+            renderCompareTable(
+                amountAInBase = price,
+                amountBInBase = total
+            )
 
             val onePiece = getString(R.string.unit_1, 1, unitPiece)
             resultHint.text = getString(R.string.result_hint_piece, onePiece)
             return
         }
 
-        // --- Вес / Объём ---
         priceUnitRow.visibility = View.VISIBLE
         quantityInput.hint = when (sellUnit) {
             unitL -> getString(R.string.hint_qty_l)
@@ -383,46 +402,45 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         }
 
         val unitOfPrice = (priceUnitSpinner.selectedItem ?: "").toString()
-        val amountOfPrice = priceAmountInput.text.toString().toDoubleOrNull() ?: 0.0
+        val amountOfPrice = parseDoubleFrom(priceAmountInput)
         if (amountOfPrice <= 0.0) {
             renderCompareTable(0.0, 0.0)
             resultHint.text = getString(R.string.dash)
             return
         }
 
-        // ===== ОБЪЁМ =====
         if (sellUnit == unitL || sellUnit == unitMl) {
             val pkgMl = when (unitOfPrice) {
                 unitL -> amountOfPrice * 1000.0
-                else -> amountOfPrice // мл
+                else -> amountOfPrice
             }
             val perMl = price / pkgMl
             val per100ml = perMl * 100.0
 
             val qtyMl = if (sellUnit == unitL) qty * 1000.0 else qty
             val total = perMl * qtyMl
-
-            // A = за введённый объём, B = за 100 мл
-            renderCompareTable(amountAInBase = total, amountBInBase = per100ml)
+            renderCompareTable(
+                amountAInBase = per100ml,
+                amountBInBase = total
+            )
 
             val hundredMl = getString(R.string.unit_100, 100, unitMl)
             resultHint.text = getString(R.string.result_hint_volume, hundredMl)
             return
         }
 
-        // ===== ВЕС =====
         val pkgG = when (unitOfPrice) {
             unitKg -> amountOfPrice * 1000.0
-            else -> amountOfPrice // г
+            else -> amountOfPrice
         }
         val perGram = price / pkgG
         val per100g = perGram * 100.0
-
         val qtyGram = if (sellUnit == unitKg) qty * 1000.0 else qty
         val total = perGram * qtyGram
-
-        // A = за введённый вес, B = за 100 г
-        renderCompareTable(amountAInBase = total, amountBInBase = per100g)
+        renderCompareTable(
+            amountAInBase = per100g,
+            amountBInBase = total
+        )
 
         val hundredG = getString(R.string.unit_100, 100, unitG)
         resultHint.text = getString(R.string.result_hint_weight, hundredG)
@@ -562,7 +580,11 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 val list = finalSet.filter { it != baseNow }.take(20)
 
                 if (list.isEmpty()) {
-                    Toast.makeText(requireContext(), getString(R.string.warn_need_at_least_one), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.warn_need_at_least_one),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@onApplySecondary
                 }
 
