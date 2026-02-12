@@ -17,16 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
 sealed class Row {
     data class Currency(
         val code: String,
-        val name: String
+        val name: String,
+        val iconRes: Int? = null
     ) : Row()
 
-    // Заголовок секции (иконка опциональна)
     data class SectionHeader(
         val title: String,
         val iconRes: Int? = null
     ) : Row()
 
-    // Разделительная линия
     data object Divider : Row()
 }
 
@@ -47,30 +46,37 @@ object CurrencySectionBuilder {
 
     fun forBase(
         ctx: Context,
-        current: Row.Currency?,                   // выбранная базовая
-        recents: List<Row.Currency>,              // последние
-        all: List<Row.Currency>,                  // всё (не обязательно, но оставим для симметрии)
-        filteredAll: List<Row.Currency>           // результат поиска
+        current: Row.Currency?,
+        favorites: List<Row.Currency>,
+        filteredAll: List<Row.Currency>
     ): List<Row> {
         val out = mutableListOf<Row>()
 
-        // Текущая
+        val currentCode = current?.code
+        val favCodes = favorites.map { it.code }.toSet()
+
+        // 1) Выбранная
         if (current != null) {
-            out += Row.SectionHeader(ctx.getString(R.string.section_current))
-            out += listOf(current)
+            out += Row.SectionHeader(ctx.getString(R.string.section_selected_one))
+            out += current
             out += Row.Divider
         }
 
-        // Последние (с иконкой часов)
-        if (recents.isNotEmpty()) {
-            out += Row.SectionHeader(ctx.getString(R.string.section_recent), iconRes = R.drawable.ic_access_time_24)
-            out += recents
+        // 2) Избранное (без текущей)
+        val favFiltered = favorites
+            .filter { it.code != currentCode }
+            .filter { f -> filteredAll.any { it.code == f.code } } // поиск тоже влияет
+        if (favFiltered.isNotEmpty()) {
+            out += Row.SectionHeader(ctx.getString(R.string.section_favorites))
+            out += favFiltered
             out += Row.Divider
         }
 
-        // Остальные (фильтрованные)
-        out += Row.SectionHeader(ctx.getString(R.string.section_others))
-        out += filteredAll
+        // 3) Общий список (без текущей и без фавов)
+        val others = filteredAll.filter { it.code != currentCode && it.code !in favCodes }
+        out += Row.SectionHeader(ctx.getString(R.string.section_all))
+        out += others
+
         return out
     }
 
@@ -129,6 +135,7 @@ private class SectionVH(view: View) : RecyclerView.ViewHolder(view) {
 private class DividerVH(view: View) : RecyclerView.ViewHolder(view)
 
 private class CurrencyVH(view: View) : RecyclerView.ViewHolder(view) {
+    val icon: ImageView = view.findViewById(R.id.icon)
     val code: TextView = view.findViewById(R.id.code)
     val name: TextView = view.findViewById(R.id.name)
     val heart: ImageView = view.findViewById(R.id.fav)
@@ -178,11 +185,13 @@ class CurrencyAdapter(
                     .inflate(R.layout.row_section, parent, false)
                 SectionVH(v)
             }
+
             TYPE_DIVIDER -> {
                 val v = LayoutInflater.from(parent.context)
                     .inflate(R.layout.row_divider, parent, false)
                 DividerVH(v)
             }
+
             else -> {
                 val v = LayoutInflater.from(parent.context)
                     .inflate(R.layout.row_currency, parent, false)
@@ -193,7 +202,9 @@ class CurrencyAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val row = getItem(position)) {
             is Row.SectionHeader -> (holder as SectionVH).bind(row)
-            Row.Divider -> { /* no-op */ }
+            Row.Divider -> { /* no-op */
+            }
+
             is Row.Currency -> bindCurrency(holder as CurrencyVH, row)
         }
     }
@@ -202,6 +213,7 @@ class CurrencyAdapter(
         val code = row.code
         vh.code.text = code
         vh.name.text = row.name
+        vh.icon.setImageResource(row.iconRes ?: R.drawable.ic_currency_placeholder)
 
         // жирным — если валюта выбрана (для secondary)
         val selected = isSelected(code)
@@ -213,32 +225,27 @@ class CurrencyAdapter(
         vh.itemView.isEnabled = !disabled
         vh.itemView.alpha = if (disabled) 0.4f else 1f
 
-        // сердечко видно только в списке второстепенных
-        if (singleMode) {
-            vh.heart.visibility = View.GONE
-        } else {
-            vh.heart.visibility = View.VISIBLE
+        vh.heart.visibility = View.VISIBLE
 
-            fun tintHeart(fav: Boolean) {
-                // используем разные иконки: filled/border
-                vh.heart.setImageResource(
-                    if (fav) R.drawable.ic_favorite_24 else R.drawable.ic_favorite_border_24
-                )
-                val color = ContextCompat.getColor(
-                    context,
-                    if (fav) R.color.fav_pink else R.color.fav_orange
-                )
-                ImageViewCompat.setImageTintList(vh.heart, ColorStateList.valueOf(color))
-            }
+        fun tintHeart(fav: Boolean) {
+            // используем разные иконки: filled/border
+            vh.heart.setImageResource(
+                if (fav) R.drawable.ic_favorite_24 else R.drawable.ic_favorite_border_24
+            )
+            val color = ContextCompat.getColor(
+                context,
+                if (fav) R.color.fav_pink else R.color.fav_orange
+            )
+            ImageViewCompat.setImageTintList(vh.heart, ColorStateList.valueOf(color))
+        }
 
-            tintHeart(isFavorite(code))
+        tintHeart(isFavorite(code))
 
-            vh.heart.setOnClickListener {
-                if (disabled) return@setOnClickListener
-                onToggleFavorite(code)
-                tintHeart(isFavorite(code))      // мгновенно обновляем вид
-                onAfterToggle?.invoke()          // пересобрать секции (перетасовать блоки)
-            }
+        vh.heart.setOnClickListener {
+            if (disabled) return@setOnClickListener
+            onToggleFavorite(code)
+            tintHeart(isFavorite(code))      // мгновенно обновляем вид
+            onAfterToggle?.invoke()          // пересобрать секции (перетасовать блоки)
         }
 
         vh.itemView.setOnClickListener {

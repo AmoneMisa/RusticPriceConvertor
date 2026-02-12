@@ -1,51 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:layout_marginBottom="6dp"
-    app:cardBackgroundColor="@color/surface_2"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="0dp"
-    app:strokeColor="@color/stroke"
-    app:strokeWidth="1dp">
+    android:layout_height="58dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:background="@drawable/bg_row_ripple">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="12dp"
+
+        android:src="@drawable/ic_currency_placeholder"
+        android:contentDescription="@string/cd_currency_icon" />
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="64dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:textColor="@color/text"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="USD" />
 
-        <!-- Акцентная линия -->
-        <View
-            android:layout_width="3dp"
-            android:layout_height="18dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/fav_orange" />
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/text_dim"
+        android:textSize="13sp"
+        tools:text="United States Dollar (very very long name...)" />
 
-        <!-- Иконка (по желанию) -->
-        <ImageView
-            android:id="@+id/sectionIcon"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginEnd="6dp"
-            android:contentDescription="@string/app_name"
-            android:visibility="gone"
-            app:tint="@color/text_secondary" />
-
-        <!-- Заголовок -->
-        <TextView
-            android:id="@+id/sectionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="13sp"
-            android:textColor="@color/text_primary" />
-
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    <ImageView
+        android:id="@+id/fav"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:contentDescription="@string/cd_favorite"
+        android:visibility="visible"
+        tools:src="@drawable/ic_favorite_border_24" />
+</LinearLayout>

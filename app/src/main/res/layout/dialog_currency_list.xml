@@ -1,91 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    app:cardBackgroundColor="@android:color/transparent"
-    app:strokeWidth="0dp"
-    android:background="@drawable/bg_glow_orange"
-    app:cardElevation="0dp"
-    app:cardCornerRadius="18dp">
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_rustic"
+    android:padding="14dp">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="14dp">
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:text="@string/title_base_currency"
+        android:textColor="@color/text"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-        <!-- Заголовок (если нужно) -->
-        <TextView
-            android:id="@+id/dialogTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="@string/search_currency"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+    <EditText
+        android:id="@+id/searchInput"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_search_field"
+        android:hint="@string/search_currency"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:textColor="@color/text"
+        android:textColorHint="@color/text_hint"
+        android:inputType="text"
+        android:singleLine="true" />
 
-        <!-- Поиск -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/search_currency"
-            app:boxBackgroundColor="@color/surface_2"
-            app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxStrokeColor="@color/stroke"
-            app:boxStrokeWidth="1dp"
-            app:hintTextColor="@color/hint">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/currencyList"
+        android:layout_width="match_parent"
+        android:layout_height="420dp"
+        android:layout_marginTop="10dp"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/searchInput"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@android:color/transparent"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:singleLine="true"
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/hint" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Разделитель -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/divider" />
-
-        <!-- Список валют -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/currencyList"
-            android:layout_width="match_parent"
-            android:layout_height="420dp"
-            android:clipToPadding="false"
-            android:overScrollMode="ifContentScrolls"
-            android:paddingBottom="6dp" />
-
-        <!-- Низ (например: кнопка закрыть/ок) — если у тебя это отдельная модалка -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="end">
-
-            <Button
-                android:id="@+id/btnClose"
-                style="@style/Widget.RPC.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="44dp"
-                android:text="@string/close" />
-        </LinearLayout>
-
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

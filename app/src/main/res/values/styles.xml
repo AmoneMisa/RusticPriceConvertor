@@ -93,5 +93,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:popupBackground">@drawable/bg_popup</item>
     </style>
-
+    <style name="ThemeOverlay.Rustic.TransparentDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

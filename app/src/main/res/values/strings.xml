@@ -29,7 +29,6 @@
     <string name="section_current">Текущая</string>
     <string name="section_selected">Текущие</string>
     <string name="section_recent">Последние</string>
-    <string name="section_favorites">Избранные</string>
     <string name="section_others">Остальные</string>
 
     <!-- Тосты/ошибки -->
@@ -66,17 +65,13 @@
     <string name="language_uk">Українська</string>
     <string name="language_en">English</string>
     <string name="language_ro">Română</string>
-
-    <!-- A11y -->
     <string name="currency_selected">Выбранные</string>
     <string name="favorite_toggle">Переключение избранного</string>
-
     <string name="unit_piece">шт.</string>
     <string name="unit_kg">кг</string>
     <string name="unit_g">г</string>
     <string name="unit_l">л</string>
     <string name="unit_ml">мл</string>
-
     <string-array name="units_main">
         <item>@string/unit_piece</item>
         <item>@string/unit_kg</item>
@@ -84,32 +79,25 @@
         <item>@string/unit_l</item>
         <item>@string/unit_ml</item>
     </string-array>
-
     <string-array name="units_mass">
         <item>@string/unit_g</item>
         <item>@string/unit_kg</item>
     </string-array>
-
     <string-array name="units_volume">
         <item>@string/unit_ml</item>
         <item>@string/unit_l</item>
     </string-array>
-
     <string name="price_amount_hint_volume">сколько мл/л указано в цене</string>
     <string name="price_amount_hint_mass">сколько г/кг указано в цене</string>
-
     <string name="tab_converter">Конвертер</string>
     <string name="tab_compare">Сравнить</string>
-
     <string name="compare_weighted">Сравнение цен товаров на развес</string>
     <string name="add_more">Добавить ещё</string>
     <string name="compare_price_hint">Цена</string>
     <string name="compare_amount_hint">Кол-во</string>
     <string name="remove">Удалить</string>
-
     <string name="compare_need_more">Добавьте минимум два товара.</string>
     <string name="compare_mixed_families">Нельзя сравнить вес и объём одновременно. Выберите одинаковый тип единиц.</string>
-
     <string name="compare_item">Товар %1$d</string>
     <string name="compare_by_price">по цене</string>
     <string name="compare_by_kg">за 1 кг</string>
@@ -119,10 +107,8 @@
     <string name="compare_amount_hint_kg">Напр. 2.55</string>
     <string name="compare_amount_hint_ml">Напр. 970</string>
     <string name="compare_amount_hint_l">Напр. 1.33</string>
-
     <string name="compare_line_price">%1$d) %2$s — %3$s</string>
     <string name="compare_line_weighted">%1$d) %2$s — %3$s</string>
-
     <string name="compare_by_weight">Сравнение по весу/объёму</string>
     <string name="label_price_item_n">Цена за товар</string>
     <string name="item_label_default">Товар</string>
@@ -151,6 +137,33 @@
     <string name="result_hint_weight">1-я цена — за %1$s, 2-я — за введённый вес.</string>
     <string name="unit_1">%1$d %2$s</string>
     <string name="unit_100">%1$d %2$s</string>
-
+    <string name="section_selected_one">Выбранная</string>
+    <string name="section_favorites">Избранное</string>
+    <string name="section_all">Общий список</string>
+    <string name="cd_currency_icon">Иконка валюты</string>
+    <string name="cd_favorite">Добавить в избранное</string>
+    <string name="cd_favorite_remove">Убрать из избранного</string>
+    <string name="no_results">Ничего не найдено</string>
+    <string name="favorite_added">Добавлено в избранное</string>
+    <string name="favorite_removed">Удалено из избранного</string>
+    <string name="compare_better">Выгоднее</string>
+    <string name="compare_summary">%1$s дешевле на %2$s (%3$s%%)</string>
+    <string name="compare_summary_all_line">✨ %1$s дешевле на %2$s (%3$s%%)</string>
+    <string name="compare_unit_piece_short">шт.</string>
+    <string name="compare_chain_line">%1$s дешевле %2$s на %3$s%%</string>
+    <string name="compare_mode_piece_short">за 1 шт</string>
+    <string name="compare_per_kg">за 1 кг</string>
+    <string name="compare_per_l">за 1 л</string>
+    <string name="compare_mode_label">Сравнивать по весу / объёму</string>
+    <string name="compare_add_item">Добавить товар</string>
+    <string name="compare_better_default">Лучший вариант</string>
+    <string name="compare_item_placeholder">Товар</string>
+    <string name="compare_amount_hint_generic">Количество</string>
+    <string name="cd_remove_item">Удалить товар</string>
+    <string name="compare_per_piece">за 1 шт</string>
+    <string name="compare_best_only">Товар %1$d выгоднее</string>
+    <string name="compare_hint_price">Цена</string>
+    <string name="compare_hint_amount">Количество</string>
+    <string name="compare_best_line">%1$s — выгоднее на %2$s %3$s (%4$s%%)\n%5$s</string>
 
 </resources>

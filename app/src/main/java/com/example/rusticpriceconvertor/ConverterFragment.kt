@@ -490,7 +490,6 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun openBaseCurrencyDialogPretty() {
         if (allSymbols.isEmpty()) return
-
         if (baseDialog?.isShowing == true) return
 
         val view = layoutInflater.inflate(R.layout.dialog_currency_list, null)
@@ -498,11 +497,10 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         val rv = view.findViewById<RecyclerView>(R.id.currencyList)
         rv.layoutManager = LinearLayoutManager(requireContext())
 
+        // все валюты
         val all = allSymbols.map { Row.Currency(it, codeToName(it)) }
-        val currentCode = base()
 
-        val recents = getRecentBase().map { Row.Currency(it, codeToName(it)) }
-            .filter { r -> all.any { it.code == r.code } }
+        val currentCode = base()
 
         val filter = CurrencyFilter(all) { cur, q ->
             val t = q.trim().lowercase()
@@ -512,30 +510,39 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         }
 
         val dialog = AlertDialog.Builder(requireContext())
-            .setCustomTitle(buildCenteredTitle(getString(R.string.title_base_currency)))
             .setView(view)
-            .setNegativeButton(R.string.btn_close, null)
             .create()
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            dialog.window?.setDimAmount(0.6f)
+        }
+
         baseDialog = dialog
         dialog.setOnDismissListener { baseDialog = null }
         dialog.show()
 
         val orange = ContextCompat.getColor(requireContext(), R.color.fav_orange)
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(orange)
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(orange)
 
         val adapter = CurrencyAdapter(
             context = requireContext(),
-            singleMode = true,
-            isFavorite = { false },
-            onToggleFavorite = {},
-            isSelected = { it == currentCode },
+            singleMode = true,                 // <-- базовая валюта: одиночный выбор
+            isFavorite = { getFavorites().contains(it) },
+            onToggleFavorite = { code ->
+                val f = getFavorites()
+                if (!f.add(code)) f.remove(code)
+                setFavorites(f)
+            },
+            isSelected = { it == currentCode }, // подсветка текущей
             onToggleSelected = {},
             onSinglePick = { picked ->
+                // выбор базы -> закрываем
                 baseCurrencySpinner.setSelection(allSymbols.indexOf(picked).coerceAtLeast(0))
                 setLastBasePersisted(picked)
 
-                // убрать из secondary, если есть
+                // убрать из secondary, если была
                 val sec = getSecondarySelectedPersisted().toMutableSet()
                 if (sec.remove(picked)) setSecondarySelectedPersisted(sec)
 
@@ -544,25 +551,33 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 baseDialog?.dismiss()
             }
         )
+
         rv.adapter = adapter
 
         fun rebuild(q: String) {
             val filtered = filter.filter(q)
+
             val current = all.find { it.code == currentCode }
-            adapter.submitList(
-                CurrencySectionBuilder.forBase(
-                    ctx = requireContext(),
-                    current,
-                    recents,
-                    all,
-                    filtered
-                )
+
+            val favRows = getFavorites()
+                .map { Row.Currency(it, codeToName(it)) }
+                .filter { r -> all.any { it.code == r.code } }
+
+            val data = CurrencySectionBuilder.forBase(
+                ctx = requireContext(),
+                current = current,
+                favorites = favRows,
+                filteredAll = filtered
             )
+
+            adapter.submitList(data)
         }
+        // =========================
 
         rebuild("")
         search.addTextChangedListener { s -> rebuild(s?.toString() ?: "") }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun openSecondaryCurrenciesDialog() {

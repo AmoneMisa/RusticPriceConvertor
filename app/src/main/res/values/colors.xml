@@ -24,18 +24,19 @@
     <color name="accent_glow_soft">#1AFF8C1A</color>
     <color name="input_bg">#FF121418</color>
     <color name="ripple">#1AFFFFFF</color>
-
-
+    <color name="divider_soft">#33FFFFFF</color>
+    <color name="ripple_soft">#22FFFFFF</color>
     <color name="bg0">#0B0C0F</color>
     <color name="bg1">#111217</color>
     <color name="card">#15161C</color>
-
     <color name="accent">#FF9B2F</color>
     <color name="accent_soft">#66FF9B2F</color>
-
     <color name="text">#EDEEF2</color>
     <color name="text_dim">#A8ABB4</color>
     <color name="text_hint">#6E717B</color>
-
     <color name="black">#000000</color>
+    <color name="success_green">#4CAF50</color>
+    <color name="success_green_soft">#1A4CAF50</color>
+    <color name="bg_compare_item">#14181F</color>
+    <color name="compare_winner_glow">#224CAF50</color>
 </resources>
