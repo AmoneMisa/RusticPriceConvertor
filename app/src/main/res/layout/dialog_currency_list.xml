@@ -10,7 +10,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/titleRow"
-        android:layout_marginTop="20dp"
         android:layout_height="80dp">
 
         <TextView
@@ -29,7 +28,8 @@
             style="@style/Widget.Rustic.IconButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginStart="345dp"
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentRight="true"
             android:contentDescription="@string/close"
             android:src="@drawable/ic_close_24" />
     </RelativeLayout>

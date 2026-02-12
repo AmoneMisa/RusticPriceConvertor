@@ -1,9 +1,14 @@
 package com.example.rusticpriceconvertor
 
+import android.R.attr.inset
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
@@ -19,6 +24,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val root = findViewById<View>(R.id.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.updatePadding(top = statusBarHeight)
+            insets
+        }
+
         val languagePrefs = getSharedPreferences(LanguageControl.PREFS_NAME, MODE_PRIVATE)
         languageControl = LanguageControl(this, languagePrefs)
         val langSpinnerMain = findViewById<Spinner>(R.id.langSpinner)

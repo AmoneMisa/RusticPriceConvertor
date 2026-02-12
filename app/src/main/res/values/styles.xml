@@ -73,7 +73,7 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
-    <style name="ShapeAppearanceOverlay.Rustic.Circle">
+    <style name="ShapeAppearanceOverlay_Rustic_Circle">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
