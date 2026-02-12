@@ -3,25 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="58dp"
+    android:background="@drawable/bg_row_ripple"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp"
-    android:background="@drawable/bg_row_ripple">
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:layout_marginEnd="12dp"
-
-        android:src="@drawable/ic_currency_placeholder"
-        android:contentDescription="@string/cd_currency_icon" />
+        android:contentDescription="@string/cd_currency_icon"
+        android:src="@drawable/ic_currency_placeholder" />
 
     <TextView
         android:id="@+id/code"
-        android:layout_width="64dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="52dp"
         android:textColor="@color/text"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -31,6 +31,7 @@
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="1"
@@ -42,6 +43,7 @@
         android:id="@+id/fav"
         android:layout_width="28dp"
         android:layout_height="28dp"
+        android:layout_marginStart="12dp"
         android:contentDescription="@string/cd_favorite"
         android:visibility="visible"
         tools:src="@drawable/ic_favorite_border_24" />

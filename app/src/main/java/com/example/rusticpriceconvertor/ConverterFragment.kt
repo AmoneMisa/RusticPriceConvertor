@@ -16,11 +16,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.rusticpriceconvertor.CurrencyPickerDialog.Companion.onToggleSecondary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
@@ -224,7 +222,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
         val restoredSecondary = getSecondarySelectedPersisted()
             .filter { it != defaultBase && list.contains(it) }
-            .take(5)
+            .take(20)
         if (restoredSecondary.isNotEmpty()) selectedSymbols = restoredSecondary.toMutableList()
 
         baseCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -490,92 +488,39 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun openBaseCurrencyDialogPretty() {
         if (allSymbols.isEmpty()) return
-        if (baseDialog?.isShowing == true) return
 
-        val view = layoutInflater.inflate(R.layout.dialog_currency_list, null)
-        val search = view.findViewById<EditText>(R.id.searchInput)
-        val rv = view.findViewById<RecyclerView>(R.id.currencyList)
-        rv.layoutManager = LinearLayoutManager(requireContext())
+        CurrencyPickerDialog.newBasePicker(
+            currentCode = base(),
+            disabledCodes = emptySet()
+        ).apply {
 
-        // все валюты
-        val all = allSymbols.map { Row.Currency(it, codeToName(it)) }
+            provideAllCurrencies = {
+                allSymbols.map { code ->
+                    CurrencyPickerDialog.Row.Currency(code = code, name = codeToName(code))
+                }
+            }
 
-        val currentCode = base()
+            provideFavoritesCodes = { getFavorites() }
 
-        val filter = CurrencyFilter(all) { cur, q ->
-            val t = q.trim().lowercase()
-            cur.name.lowercase().contains(t) ||
-                    cur.code.lowercase().contains(t) ||
-                    isSubsequence(t, cur.code.uppercase())
-        }
+            provideCurrentBaseCode = { base() }
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(view)
-            .create()
-
-        dialog.setOnShowListener {
-            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-            dialog.window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            dialog.window?.setDimAmount(0.6f)
-        }
-
-        baseDialog = dialog
-        dialog.setOnDismissListener { baseDialog = null }
-        dialog.show()
-
-        val orange = ContextCompat.getColor(requireContext(), R.color.fav_orange)
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(orange)
-
-        val adapter = CurrencyAdapter(
-            context = requireContext(),
-            singleMode = true,                 // <-- базовая валюта: одиночный выбор
-            isFavorite = { getFavorites().contains(it) },
             onToggleFavorite = { code ->
                 val f = getFavorites()
                 if (!f.add(code)) f.remove(code)
                 setFavorites(f)
-            },
-            isSelected = { it == currentCode }, // подсветка текущей
-            onToggleSelected = {},
-            onSinglePick = { picked ->
-                // выбор базы -> закрываем
+            }
+
+            onPickBase = { picked ->
                 baseCurrencySpinner.setSelection(allSymbols.indexOf(picked).coerceAtLeast(0))
                 setLastBasePersisted(picked)
 
-                // убрать из secondary, если была
                 val sec = getSecondarySelectedPersisted().toMutableSet()
                 if (sec.remove(picked)) setSecondarySelectedPersisted(sec)
 
-                pushRecentBase(picked)
                 reloadRates()
-                baseDialog?.dismiss()
             }
-        )
 
-        rv.adapter = adapter
-
-        fun rebuild(q: String) {
-            val filtered = filter.filter(q)
-
-            val current = all.find { it.code == currentCode }
-
-            val favRows = getFavorites()
-                .map { Row.Currency(it, codeToName(it)) }
-                .filter { r -> all.any { it.code == r.code } }
-
-            val data = CurrencySectionBuilder.forBase(
-                ctx = requireContext(),
-                current = current,
-                favorites = favRows,
-                filteredAll = filtered
-            )
-
-            adapter.submitList(data)
-        }
-        // =========================
-
-        rebuild("")
-        search.addTextChangedListener { s -> rebuild(s?.toString() ?: "") }
+        }.show(parentFragmentManager, "base_currency_picker")
     }
 
 
@@ -583,102 +528,50 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     private fun openSecondaryCurrenciesDialog() {
         if (allSymbols.isEmpty()) return
 
-        val view = layoutInflater.inflate(R.layout.dialog_currency_list, null)
-        val search = view.findViewById<EditText>(R.id.searchInput)
-        val rv = view.findViewById<RecyclerView>(R.id.currencyList)
-        rv.layoutManager = LinearLayoutManager(requireContext())
-
-        val all = allSymbols.map { Row.Currency(it, codeToName(it)) }
-
-        val filter = CurrencyFilter(all) { cur, q ->
-            val t = q.trim().lowercase()
-            cur.name.lowercase().contains(t) ||
-                    cur.code.lowercase().contains(t) ||
-                    isSubsequence(t, cur.code.uppercase())
-        }
-
-        val selected = selectedSymbols.toMutableSet()
         val baseNow = base()
+        val selected = getSecondarySelectedPersisted().toMutableSet().apply { remove(baseNow) }
 
-        // снимаем базовую из выбранных, если она там была
-        if (selected.remove(baseNow)) {
-            setSecondarySelectedPersisted(selected)
-        }
-        lateinit var adapter: CurrencyAdapter
-        var currentQuery = ""
+        CurrencyPickerDialog.newSecondaryPicker(
+            disabledCodes = setOf(baseNow)
+        ).apply {
 
-        fun buildSelectedRows(): List<Row.Currency> =
-            selected.map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
+            provideAllCurrencies = {
+                allSymbols.map { code ->
+                    CurrencyPickerDialog.Row.Currency(code = code, name = codeToName(code))
+                }
+            }
 
-        fun buildFavoriteRows(): List<Row.Currency> =
-            getFavorites().map { Row.Currency(it, codeToName(it)) }.sortedBy { it.code }
+            provideFavoritesCodes = { getFavorites() }
 
-        fun rebuild(q: String) {
-            currentQuery = q
-            val filtered = filter.filter(q)
-            val data = CurrencySectionBuilder.forSecondary(
-                requireContext(),
-                selected = buildSelectedRows(),
-                favorites = buildFavoriteRows(),
-                all = all,
-                filteredAll = filtered
-            )
-            adapter.submitList(data)
-        }
+            provideSelectedSecondaryCodes = { selected }
 
-        adapter = CurrencyAdapter(
-            context = requireContext(),
-            singleMode = false,
-            isFavorite = { getFavorites().contains(it) },
+            provideCurrentBaseCode = { baseNow }
+
             onToggleFavorite = { code ->
                 val f = getFavorites()
                 if (!f.add(code)) f.remove(code)
                 setFavorites(f)
-            },
-            isSelected = { selected.contains(it) },
-            onToggleSelected = { code ->
-                if (!selected.add(code)) selected.remove(code)
-                // сохраняем прямо на лету, чтобы переживало пересоздание
-                setSecondarySelectedPersisted(selected)
-            },
-            onSinglePick = {}
-        ).apply {
-            disabledCodes = setOf(baseNow)
-            onAfterToggle = { rebuild(currentQuery) }
-        }
-
-        rv.adapter = adapter
-
-        val dlg = AlertDialog.Builder(requireContext())
-            .setCustomTitle(buildCenteredTitle(getString(R.string.title_secondary_currencies)))
-            .setView(view)
-            .setPositiveButton(getString(R.string.btn_ok)) { d, _ ->
-                val list = selected.toList().filter { it != baseNow }.take(5)
-                if (list.isEmpty()) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.warn_need_at_least_one),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                } else {
-                    selectedSymbols = list.toMutableList()
-                    setSecondarySelectedPersisted(selectedSymbols.toSet())
-                    reloadRates()
-                }
-                d.dismiss()
             }
-            .setNegativeButton(getString(R.string.btn_close), null)
-            .create()
 
-        dlg.show()
+            onToggleSecondary = { code ->
+                if (!selected.add(code)) selected.remove(code)
+                setSecondarySelectedPersisted(selected) // сохраняем на лету
+            }
 
+            onApplySecondary = onApplySecondary@{ finalSet ->
+                val list = finalSet.filter { it != baseNow }.take(20)
 
-        val orange = ContextCompat.getColor(requireContext(), R.color.fav_orange)
-        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(orange)
-        dlg.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(orange)
-        rebuild("")
-        search.addTextChangedListener { s -> rebuild(s?.toString() ?: "") }
+                if (list.isEmpty()) {
+                    Toast.makeText(requireContext(), getString(R.string.warn_need_at_least_one), Toast.LENGTH_SHORT).show()
+                    return@onApplySecondary
+                }
+
+                selectedSymbols = list.toMutableList()
+                setSecondarySelectedPersisted(selectedSymbols.toSet())
+                reloadRates()
+            }
+
+        }.show(parentFragmentManager, "secondary_currency_picker")
     }
 
     // ========= Избранное / последние / хранение =========

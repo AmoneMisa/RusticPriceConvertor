@@ -25,7 +25,8 @@
 
     <!-- Диалоги выбора валют -->
     <string name="title_base_currency">Основная валюта</string>
-    <string name="title_secondary_currencies">Валюты для конвертации (мин. 1, макс. 5)</string>
+    <string name="title_secondary_currencies_fmt">Валюты для конвертации (мин. %1$d, макс. %2$d)</string>
+    <string name="warn_max_currencies">Можно выбрать максимум %1$d валют.</string>
     <string name="section_current">Текущая</string>
     <string name="section_selected">Текущие</string>
     <string name="section_recent">Последние</string>
@@ -165,5 +166,6 @@
     <string name="compare_hint_price">Цена</string>
     <string name="compare_hint_amount">Количество</string>
     <string name="compare_best_line">%1$s — выгоднее на %2$s %3$s (%4$s%%)\n%5$s</string>
-
+    <string name="title_secondary_currencies">Валюты для конвертации (мин. 1, макс. 20)</string>
+    <string name="choose_secondary_currencies">Валюты для конвертации</string>
 </resources>
