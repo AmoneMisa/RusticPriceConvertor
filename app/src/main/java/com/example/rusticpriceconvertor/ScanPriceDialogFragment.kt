@@ -385,9 +385,35 @@ class ScanPriceDialogFragment : DialogFragment() {
         return Parsed(best.first, best.second)
     }
 
+    private fun tryRestoreDecimal(text: String, parsed: Parsed): Parsed? {
+        if (parsed.amount.contains('.')) return parsed
+
+        val digits = parsed.amount.filter { it.isDigit() }
+        if (digits.length !in 2..6) return parsed
+
+        val hasCurrency = parsed.currency != null || detectCurrencyNear(text) != null
+        val hasDecimalMarkers =
+            text.contains(',') || text.contains('.') || Regex("""\b[-–—]\b|,\s*-|\.?\s*-""").containsMatchIn(
+                text
+            )
+        if (!hasCurrency && !hasDecimalMarkers) return parsed
+
+        val amount = when (digits.length) {
+            2 -> "0.${digits}"
+            else -> "${digits.dropLast(2)}.${digits.takeLast(2)}"
+        }
+
+        val v = amount.toDoubleOrNull() ?: return parsed
+        if (v <= 0.0 || v > 1_000_000.0) return parsed
+
+        val cur = parsed.currency ?: detectCurrencyNear(text)
+        return Parsed(amount, cur)
+    }
+
     private fun parseNormal(blocks: List<TextBlock>, roi: Rect): Parsed? {
         val text = buildTextFromRoi(blocks, roi) ?: return null
-        return extractBestPriceAndCurrency(text)
+        val base = extractBestPriceAndCurrency(text) ?: return null
+        return tryRestoreDecimal(text, base)
     }
 
     private fun centerInside(box: Rect, roi: Rect): Boolean {
