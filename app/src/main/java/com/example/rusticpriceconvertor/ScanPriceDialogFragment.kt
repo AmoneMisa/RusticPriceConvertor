@@ -483,7 +483,7 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private val moneyRegex =
-        Regex("""(?<!\d)(\d{1,3}(?:[ \u00A0\u202F]\d{3})+|\d+)(?:[.,](\d{1,2}))?(?!\d)""")
+        Regex("""(?<!\d)(\d{1,3}(?:[\s\u00A0\u202F]+\d{3})+|\d+)(?:[.,](\d{1,2}))?(?!\d)""")
 
     private fun extractBestPriceAndCurrency(raw: String): Parsed? {
         val text = raw
@@ -499,21 +499,23 @@ class ScanPriceDialogFragment : DialogFragment() {
         var bestScore = Int.MIN_VALUE
 
         for (m in matches) {
-            val intPart = m.groupValues[1].replace(Regex("""\s+"""), "")
             val frac = m.groupValues.getOrNull(2).orEmpty()
+            val rawInt = m.groupValues[1]
+            val intPart = rawInt.replace(Regex("""\s+"""), "")
             val amount = if (frac.isNotBlank()) "$intPart.$frac" else intPart
-
             val v = amount.toDoubleOrNull() ?: continue
             if (v <= 0.0 || v > 1_000_000.0) continue
 
             val window = sliceWindow(text, m.range.first, m.range.last + 1, 18)
             val cur = detectCurrencyNear(window)
+            val hasThousandsSep = rawInt.contains(' ') || rawInt.contains('\u00A0') || rawInt.contains('\u202F')
 
             val score =
                 (if (cur != null) 1000 else 0) +
                         (if (frac.isNotBlank()) 50 else 0) +
-                        (if (v >= 10.0) 10 else 0) +
-                        (if (v in 0.1..9999.0) 5 else 0)
+                        (if (hasThousandsSep) 80 else 0) +
+                        (min(intPart.length, 8) * 2) +
+                        (if (v >= 10.0) 10 else 0)
 
             if (score > bestScore) {
                 bestScore = score
