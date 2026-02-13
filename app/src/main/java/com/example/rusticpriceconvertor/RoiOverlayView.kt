@@ -65,8 +65,7 @@ class RoiOverlayView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val r = dp(16f)
-        canvas.drawRoundRect(rect, r, r, stroke)
+        canvas.drawRect(rect, stroke)
     }
 
     private val touchSlop = dp(24f)
