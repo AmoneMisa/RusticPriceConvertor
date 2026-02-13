@@ -1,13 +1,5 @@
 <resources>
 
-    <style name="Theme.Rustic" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/bg0</item>
-        <item name="colorPrimary">@color/accent</item>
-        <item name="colorSecondary">@color/accent</item>
-        <!-- Убираем fontFamily, чтобы не падало -->
-    </style>
-
     <!-- Tabs -->
     <style name="Widget.Rustic.TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabIndicatorColor">@color/accent</item>
@@ -94,11 +86,4 @@
     </style>
 
     <style name="Text.Rustic" parent="Text.Rustic.Body" />
-    <style name="Widget.RPC.SpinnerNoBg" parent="Widget.AppCompat.Spinner">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:popupBackground">@drawable/bg_popup</item>
-    </style>
-    <style name="ThemeOverlay.Rustic.TransparentDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
 </resources>

@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         super.attachBaseContext(LocaleUtil.updateBaseContextLocale(newBase))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

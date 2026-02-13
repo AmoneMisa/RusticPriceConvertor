@@ -260,7 +260,6 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun reloadRates() {
         val base = (baseCurrencySpinner.selectedItem ?: return).toString()
         val targets = selectedSymbols.filter { it != base }
@@ -542,7 +541,6 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun openSecondaryCurrenciesDialog() {
         if (allSymbols.isEmpty()) return
 

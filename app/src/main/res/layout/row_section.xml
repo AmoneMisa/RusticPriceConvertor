@@ -19,7 +19,6 @@
         tools:text="Избранное" />
 
     <ImageView
-        android:id="@+id/sectionIcon"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="8dp"

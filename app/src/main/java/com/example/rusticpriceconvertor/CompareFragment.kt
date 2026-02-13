@@ -291,21 +291,18 @@ class CompareFragment : Fragment(R.layout.fragment_compare) {
                 "$cur • $u"
             }
 
-            // remove
             vh.btnRemove.visibility = if (item.removable) View.VISIBLE else View.GONE
             vh.btnRemove.setOnClickListener {
                 val p = vh.bindingAdapterPosition
                 if (p != RecyclerView.NO_POSITION && items.getOrNull(p)?.removable == true) {
                     items.removeAt(p)
                     notifyItemRemoved(p)
-                    // переиндексация
                     for (i in p until items.size) items[i].index = i + 1
                     notifyItemRangeChanged(p, items.size - p)
                     onRemoved()
                 }
             }
 
-            // amount visibility + hint
             vh.etAmount.visibility = if (weighted) View.VISIBLE else View.GONE
             vh.etAmount.hint = when (currentUnit) {
                 QtyUnit.G -> getString(R.string.compare_amount_hint_g)
@@ -314,11 +311,8 @@ class CompareFragment : Fragment(R.layout.fragment_compare) {
                 QtyUnit.L -> getString(R.string.compare_amount_hint_l)
             }
 
-            // highlight best
             val isBest = (bestId != null && item.id == bestId)
             vh.root.setBackgroundResource(if (isBest) R.drawable.bg_best_card else R.drawable.bg_card_glow)
-
-            // watchers без потери фокуса
             vh.bindInputs(item, onChanged)
         }
     }
@@ -332,7 +326,6 @@ class CompareFragment : Fragment(R.layout.fragment_compare) {
         val tvCurrency: TextView = v.findViewById(R.id.tvCurrency)
 
         fun bindInputs(item: CompareItem, onChanged: () -> Unit) {
-            // снять старые watcher'ы
             (etPrice.tag as? TextWatcher)?.let { etPrice.removeTextChangedListener(it) }
             (etAmount.tag as? TextWatcher)?.let { etAmount.removeTextChangedListener(it) }
 

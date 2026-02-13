@@ -13,7 +13,6 @@ import java.io.IOException
 import java.time.Duration
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 object CurrencyApi {
     private const val TAG = "CurrencyApi"
 

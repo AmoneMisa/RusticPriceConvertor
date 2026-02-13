@@ -10,18 +10,10 @@
     <color name="text_muted">#7F8AA3</color>
     <color name="hint">#6E7A93</color>
     <color name="fav_orange">#FF8A1A</color>
-    <color name="fav_orange_glow">#80FF8A1A</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="grey">#FF9AA3AD</color>
     <color name="grey_dark">#FF2A2D31</color>
-    <color name="light_black">#FF14161A</color>
     <color name="fav_orange_light">#FFFFB266</color>
     <color name="fav_pink">#FFFB4C8D</color>
-    <color name="divider">#FF232831</color>
-    <color name="success">#FF4CAF7D</color>
     <color name="error">#FFE15B5B</color>
-    <color name="accent_glow">#33FF8C1A</color>
-    <color name="accent_glow_soft">#1AFF8C1A</color>
     <color name="input_bg">#FF121418</color>
     <color name="ripple">#1AFFFFFF</color>
     <color name="divider_soft">#33FFFFFF</color>
@@ -36,7 +28,4 @@
     <color name="text_hint">#6E717B</color>
     <color name="black">#000000</color>
     <color name="success_green">#4CAF50</color>
-    <color name="success_green_soft">#1A4CAF50</color>
-    <color name="bg_compare_item">#14181F</color>
-    <color name="compare_winner_glow">#224CAF50</color>
 </resources>

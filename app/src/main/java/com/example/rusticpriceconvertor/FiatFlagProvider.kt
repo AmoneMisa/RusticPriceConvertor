@@ -24,7 +24,6 @@ object FiatFlagProvider {
             return
         }
 
-        log("Countries count = ${countries.size}")
         if (countries.isEmpty()) return
 
         val out = HashMap<String, Int>(512)
