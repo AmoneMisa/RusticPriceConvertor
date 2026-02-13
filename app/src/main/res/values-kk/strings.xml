@@ -53,7 +53,7 @@
     <string name="compare_max_items">Ең көбі %1$d тауарды салыстыруға болады</string>
     <string name="scan_price">Бағаны сканерлеу</string>
     <string name="fast_mode">Жылдам режим</string>
-    <string name="big_price_tag">Үлкен бағатег</string>
+    <string name="big_price_tag">Жоғары баға</string>
     <string name="scan">Сканерлеу</string>
     <string name="close">Жабу</string>
     <string name="label_price">Баға</string>

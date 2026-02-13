@@ -53,7 +53,7 @@
     <string name="compare_max_items">You can compare up to %1$d items</string>
     <string name="scan_price">Scan price</string>
     <string name="fast_mode">Fast mode</string>
-    <string name="big_price_tag">Big price tag</string>
+    <string name="big_price_tag">Big price</string>
     <string name="scan">Scan</string>
     <string name="close">Close</string>
     <string name="label_price">Price</string>

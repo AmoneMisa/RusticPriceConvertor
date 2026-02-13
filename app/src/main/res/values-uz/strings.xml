@@ -53,7 +53,7 @@
     <string name="compare_max_items">Ko‘pi bilan %1$d ta mahsulotni taqqoslash mumkin</string>
     <string name="scan_price">Narxni skanerlash</string>
     <string name="fast_mode">Tezkor rejim</string>
-    <string name="big_price_tag">Katta narx yorlig‘i</string>
+    <string name="big_price_tag">Yuqori narx</string>
     <string name="scan">Skanerlash</string>
     <string name="close">Yopish</string>
     <string name="label_price">Narx</string>

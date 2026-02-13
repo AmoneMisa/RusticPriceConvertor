@@ -52,7 +52,7 @@
     <string name="item_n">Товар %1$d</string>
     <string name="compare_max_items">Можно сравнить максимум %1$d товара</string>
     <string name="fast_mode">Быстрый режим</string>
-    <string name="big_price_tag">Большой ценник</string>
+    <string name="big_price_tag">Крупная цена</string>
     <string name="scan">Сканировать</string>
     <string name="close">Закрыть</string>
     <string name="label_price">Цена</string>

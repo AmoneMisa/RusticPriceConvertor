@@ -379,7 +379,7 @@ class ScanPriceDialogFragment : DialogFragment() {
         if (candidates.isEmpty()) return null
 
         val best = candidates.maxWith(
-            compareBy<Pair<String, String?>>({ it.first.length }, { it.first.toLongOrNull() ?: 0L })
+            compareBy({ it.first.length }, { it.first.toLongOrNull() ?: 0L })
         )
 
         return Parsed(best.first, best.second)
