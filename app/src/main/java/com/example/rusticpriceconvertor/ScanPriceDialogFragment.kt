@@ -483,10 +483,13 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private val moneyRegex =
-        Regex("""(?<!\d)(\d{1,3}(?:[ \u00A0]\d{3})+|\d+)(?:[.,](\d{1,2}))?(?!\d)""")
+        Regex("""(?<!\d)(\d{1,3}(?:[ \u00A0\u202F]\d{3})+|\d+)(?:[.,](\d{1,2}))?(?!\d)""")
 
     private fun extractBestPriceAndCurrency(raw: String): Parsed? {
-        val text = raw.replace('\u00A0', ' ').replace('\n', ' ')
+        val text = raw
+            .replace('\u00A0', ' ')
+            .replace('\u202F', ' ')
+            .replace('\n', ' ')
         if (text.isBlank()) return null
 
         val matches = moneyRegex.findAll(text).toList()
@@ -496,7 +499,7 @@ class ScanPriceDialogFragment : DialogFragment() {
         var bestScore = Int.MIN_VALUE
 
         for (m in matches) {
-            val intPart = m.groupValues[1].replace(" ", "")
+            val intPart = m.groupValues[1].replace(Regex("""\s+"""), "")
             val frac = m.groupValues.getOrNull(2).orEmpty()
             val amount = if (frac.isNotBlank()) "$intPart.$frac" else intPart
 
