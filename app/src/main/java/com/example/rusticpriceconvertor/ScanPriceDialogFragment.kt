@@ -356,7 +356,7 @@ class ScanPriceDialogFragment : DialogFragment() {
                         val gap = bTok.box.left - lastBox.right
                         val sameLine =
                             kotlin.math.abs(bTok.box.centerY() - lastBox.centerY()) <= lastBox.height() * 0.6f
-                        val looksLikeGroup = bTok.text.length == 3
+                        val looksLikeGroup = bTok.text.length == 3 && bTok.text.all { it == '0' }
                         val near = gap <= lastBox.height() * 1.2f && gap >= -lastBox.height() * 0.2f
 
                         if (sameLine && looksLikeGroup && near) {
@@ -386,7 +386,6 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private fun parseNormal(blocks: List<TextBlock>, roi: Rect): Parsed? {
-        extractByTokens(blocks, roi)?.let { return it }
         val text = buildTextFromRoi(blocks, roi) ?: return null
         return extractBestPriceAndCurrency(text)
     }
@@ -398,13 +397,11 @@ class ScanPriceDialogFragment : DialogFragment() {
     }
 
     private fun parseBigTag(blocks: List<TextBlock>, roi: Rect): Parsed? {
+        extractByTokens(blocks, roi)?.let { return it }
         val roiText = buildTextFromRoi(blocks, roi)
         if (!roiText.isNullOrBlank()) {
             val m = Regex("""(?<!\d)(\d{1,3})\s*[.,]?\s*(\d{2})(?!\d)""").find(
-                roiText.replace(
-                    '\n',
-                    ' '
-                )
+                roiText.replace('\n', ' ')
             )
             if (m != null) {
                 val amount = "${m.groupValues[1]}.${m.groupValues[2]}"
