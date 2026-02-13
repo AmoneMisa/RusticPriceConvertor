@@ -294,7 +294,99 @@ class ScanPriceDialogFragment : DialogFragment() {
 
     private data class Parsed(val amount: String, val currency: String?)
 
+    private fun extractByTokens(blocks: List<TextBlock>, roi: Rect): Parsed? {
+        data class Tok(val text: String, val box: Rect)
+
+        fun normDigits(raw: String): String? {
+            val t = raw.trim()
+                .replace("O", "0", ignoreCase = true)
+                .replace("D", "0", ignoreCase = true)
+                .replace("I", "1", ignoreCase = true)
+                .replace("l", "1", ignoreCase = true)
+
+            val digits = t.filter { it.isDigit() }
+            return digits.ifBlank { null }
+        }
+
+        fun overlap(a: Rect, b: Rect): Float {
+            val ixL = max(a.left, b.left)
+            val ixT = max(a.top, b.top)
+            val ixR = min(a.right, b.right)
+            val ixB = min(a.bottom, b.bottom)
+            if (ixR <= ixL || ixB <= ixT) return 0f
+            val inter = (ixR - ixL) * (ixB - ixT)
+            val area = (a.width() * a.height()).coerceAtLeast(1)
+            return inter.toFloat() / area.toFloat()
+        }
+
+        fun lineOk(lb: Rect): Boolean {
+            val cx = (lb.left + lb.right) / 2
+            val cy = (lb.top + lb.bottom) / 2
+            return roi.contains(cx, cy) || overlap(lb, roi) >= 0.20f
+        }
+
+        val candidates = mutableListOf<Pair<String, String?>>()
+
+        for (b in blocks) {
+            for (line in b.lines) {
+                val lb = line.boundingBox ?: continue
+                if (!lineOk(lb)) continue
+
+                val cur = detectCurrencyNear(line.text)
+
+                val toks = mutableListOf<Tok>()
+                for (el in line.elements) {
+                    val box = el.boundingBox ?: continue
+                    val n = normDigits(el.text) ?: continue
+                    toks.add(Tok(n, box))
+                }
+                if (toks.isEmpty()) continue
+
+                toks.sortBy { it.box.left }
+
+                var i = 0
+                while (i < toks.size) {
+                    val a = toks[i]
+                    var s = a.text
+                    var lastBox = a.box
+
+                    var j = i + 1
+                    while (j < toks.size) {
+                        val bTok = toks[j]
+                        val gap = bTok.box.left - lastBox.right
+                        val sameLine =
+                            kotlin.math.abs(bTok.box.centerY() - lastBox.centerY()) <= lastBox.height() * 0.6f
+                        val looksLikeGroup = bTok.text.length == 3
+                        val near = gap <= lastBox.height() * 1.2f && gap >= -lastBox.height() * 0.2f
+
+                        if (sameLine && looksLikeGroup && near) {
+                            s += bTok.text
+                            lastBox = bTok.box
+                            j++
+                        } else break
+                    }
+
+                    val v = s.toDoubleOrNull()
+                    if (v != null && v > 0.0 && v <= 1_000_000.0) {
+                        candidates.add(s to cur)
+                    }
+
+                    i = if (j > i + 1) j else i + 1
+                }
+            }
+        }
+
+        if (candidates.isEmpty()) return null
+
+        val best = candidates.maxWith(
+            compareBy<Pair<String, String?>>({ it.first.length }, { it.first.toLongOrNull() ?: 0L })
+        )
+
+        return Parsed(best.first, best.second)
+    }
+
     private fun parseNormal(blocks: List<TextBlock>, roi: Rect): Parsed? {
+        extractByTokens(blocks, roi)?.let { return it }
         val text = buildTextFromRoi(blocks, roi) ?: return null
         return extractBestPriceAndCurrency(text)
     }
