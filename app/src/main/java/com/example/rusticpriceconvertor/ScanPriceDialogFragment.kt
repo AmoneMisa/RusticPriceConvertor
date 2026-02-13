@@ -508,14 +508,12 @@ class ScanPriceDialogFragment : DialogFragment() {
 
             val window = sliceWindow(text, m.range.first, m.range.last + 1, 18)
             val cur = detectCurrencyNear(window)
-            val hasThousandsSep = rawInt.contains(' ') || rawInt.contains('\u00A0') || rawInt.contains('\u202F')
+            val hasThousandsSep = Regex("""[\s\u00A0\u202F]\d{3}""").containsMatchIn(rawInt)
 
             val score =
                 (if (cur != null) 1000 else 0) +
                         (if (frac.isNotBlank()) 50 else 0) +
-                        (if (hasThousandsSep) 80 else 0) +
-                        (min(intPart.length, 8) * 2) +
-                        (if (v >= 10.0) 10 else 0)
+                        (if (hasThousandsSep) 500 else 0)
 
             if (score > bestScore) {
                 bestScore = score
