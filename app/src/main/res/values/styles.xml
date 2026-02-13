@@ -71,7 +71,7 @@
     </style>
 
     <!-- Text -->
-    <style name="Text.Rustic.Body">
+    <style name="Text.Rustic.Body" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">15sp</item>
         <item name="android:lineSpacingExtra">2dp</item>
