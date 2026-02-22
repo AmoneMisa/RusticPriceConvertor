@@ -48,19 +48,9 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
 
     // Штучно
     private lateinit var modePiece: LinearLayout
-    private lateinit var piecePriceLabel: TextView
-    private lateinit var pieceCountLabel: TextView
-    private lateinit var pieceConvertedPerItem: TextView
-    private lateinit var pieceConvertedTotal: TextView
     private lateinit var modeWeight: LinearLayout
-    private lateinit var pricePerUnitLabel: TextView
-    private lateinit var takenAmountLabel: TextView
-    private lateinit var costPerBaseUnitLabel: TextView
-    private lateinit var convertedPerUnitLabel: TextView
-    private lateinit var convertedPerBaseUnitLabel: TextView
-    private lateinit var convertedTotalLabel: TextView
 
-    private var symbolNames: Map<String, String> = emptyMap()  // code -> name
+    private var symbolNames: Map<String, String> = emptyMap()
     private var allSymbols: List<String> = emptyList()
     private var selectedSymbols: MutableList<String> = mutableListOf("USD", "EUR")
     private var rates: Map<String, Double> = emptyMap()
